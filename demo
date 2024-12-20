@@ -1,0 +1,182 @@
+<?php
+$page_title = 'All User';
+require_once('includes/load.php');
+?>
+<?php
+// Checkin What level user has permission to view this page
+page_require_level(1);
+//pull out all user form database
+$all_users = find_all_user();
+?>
+<?php include_once('layouts/header.php'); ?>
+
+<div class="row">
+    <div class="col xs-12">
+        <?php echo display_msg($msg); ?>
+    </div>
+</div>
+<div class="workboard__heading">
+    <h1 class="workboard__title">Users</h1>
+</div>
+<div class="workpanel">
+    <div class="overall-info">
+        <form class="general--form access__form">
+            <div class="row">
+                <div class="col xs-12">
+                    <div class="info">
+                        <div class="row">
+                            <div class="col xs-12 sx-6">
+                                <span>New User</span>
+                            </div>
+                            <div class="col xs-12 sx-6">
+                                <div class="site-panel">
+                                    <div class="form__action">
+                                        <input type="submit" class="button tertiary-line" value="Discard">
+                                    </div>
+                                    <div class="form__action">
+                                        <input type="submit" class="button primary-tint" value="Save">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col xs-12 sm-3">
+                            <div class="form__module">
+                                <label for="name" class="form__label">Name</label>
+                                <div class="form__set">
+                                    <input type="text" id="name" placeholder="Name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col xs-12 sm-3">
+                            <div class="form__module">
+                                <label for="usrname" class="form__label">Username</label>
+                                <div class="form__set">
+                                    <input type="text" id="usrname" placeholder="Username">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col xs-12 sm-3">
+                            <div class="form__module">
+                                <label for="usrpwd" class="form__label">Password</label>
+                                <div class="form__set">
+                                    <input type="Password" id="usrpwd" placeholder="Password">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col xs-12 sm-3">
+                            <div class="form__module">
+                                <label for="usrrole" class="form__label">User Role</label>
+                                <div class="form__set">
+                                    <input type="text" id="usrrole" placeholder="Admin">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="meta-info">
+        <div class="row">
+            <div class="col xs-12 sm-6">
+                <div class="dropdown">
+                    <select name="" id="">
+                        <option value="">September, 2024 </option>
+                        <option value="">October, 2024 </option>
+                        <option value="">November, 2024 </option>
+                        <option value="">December, 2024 </option>
+                        <option value="">January, 2024 </option>
+                        <option value="">Feburary, 2024 </option>
+                        <option value="">March, 2024 </option>
+                        <option value="">April, 2024 </option>
+                        <option value="">May, 2024 </option>
+                        <option value="">June, 2024 </option>
+                        <option value="">July, 2024 </option>
+                        <option value="">August, 2024 </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col xs-12 sm-6">
+                <form action="get">
+                    <div class="site-panel">
+                        <div class="form__module">
+                            <div class="form__module">
+                                <div class="form__set ">
+                                    <span class="icon-search"></span>
+                                    <input class="search-input" type="search" placeholder="Search">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="downoad">
+                            <a href=""><span class="icon-download"></span>Download</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col xs-12">
+            <div class="questionaries__showcase" id="question_popup" style="display: flex;">
+                <div class="tbl-wrap">
+                    <table id="tracking__table">
+                        <thead>
+                            <tr>
+                                <th class="dtser">S.N</th>
+                                <th class="name">Name</th>
+                                <th class="username">Username</th>
+                                <th class="userrole">User Role</th>
+                                <th class="status">Status</th>
+                                <th class="last login">Last Login</th>
+                                <th class="action">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($all_users as $a_user): ?>
+                                <tr>
+                                    <td class="text-center"><?php echo count_id(); ?></td>
+                                    <td><?php echo remove_junk(ucwords($a_user['name'])) ?></td>
+                                    <td><?php echo remove_junk(ucwords($a_user['username'])) ?></td>
+                                    <td class="text-center"><?php echo remove_junk(ucwords($a_user['group_name'])) ?></td>
+                                    <td class="text-center">
+                                        <?php if ($a_user['status'] === '1'): ?>
+                                            <span class="label label-success"><?php echo "Active"; ?></span>
+                                        <?php else: ?>
+                                            <span class="label label-danger"><?php echo "Deactive"; ?></span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?php echo read_date($a_user['last_login']) ?></td>
+                                    <td class="text-center">
+                                        <div class="btn-group">
+                                            <a href="edit_user.php?id=<?php echo (int)$a_user['id']; ?>" class="btn btn-xs btn-warning" data-toggle="tooltip" title="Edit">
+                                                <i class="glyphicon glyphicon-pencil"></i>
+                                            </a>
+                                            <a href="delete_user.php?id=<?php echo (int)$a_user['id']; ?>" class="btn btn-xs btn-danger" data-toggle="tooltip" title="Remove">
+                                                <i class="glyphicon glyphicon-remove"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="pagination">
+                <ul class="paging">
+                    <li><a href="#"><span class="icon-keyboard_arrow_left"></span class=""></a></li>
+                    <li><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#"><span class="icon-keyboard_arrow_right"></span></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<?php include_once('layouts/footer.php'); ?>
