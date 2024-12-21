@@ -1,130 +1,196 @@
 <?php
-  $page_title = 'Edit User';
-  require_once('includes/load.php');
-  // Checkin What level user has permission to view this page
-   page_require_level(1);
+$page_title = 'Edit User';
+require_once('includes/load.php');
+page_require_level(1);
 
-  $e_user = find_by_id('users',(int)$_GET['id']);
-  $groups  = find_all('user_groups');
-  if(!$e_user){
-    $session->msg("d","Missing user id.");
-    redirect('users.php');
-  }
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+  $session->msg("d", "Invalid user ID.");
+  redirect('users.php');
+}
 
-//Update User basic info
-  if(isset($_POST['update'])) {
-    $req_fields = array('name','username','level');
-    validate_fields($req_fields);
-    if(empty($errors)){
-             $id = (int)$e_user['id'];
-           $name = remove_junk($db->escape($_POST['name']));
-       $username = remove_junk($db->escape($_POST['username']));
-          $level = (int)$db->escape($_POST['level']);
-       $status   = remove_junk($db->escape($_POST['status']));
-            $sql = "UPDATE users SET name ='{$name}', username ='{$username}',user_level='{$level}',status='{$status}' WHERE id='{$db->escape($id)}'";
-         $result = $db->query($sql);
-          if($result && $db->affected_rows() === 1){
-            $session->msg('s',"Acount Updated ");
-            redirect('edit_user.php?id='.(int)$e_user['id'], false);
-          } else {
-            $session->msg('d',' Sorry failed to updated!');
-            redirect('edit_user.php?id='.(int)$e_user['id'], false);
-          }
-    } else {
-      $session->msg("d", $errors);
-      redirect('edit_user.php?id='.(int)$e_user['id'],false);
-    }
-  }
+$e_user = find_by_id('users', (int)$_GET['id']);
+$groups = find_all('user_groups');
+if (!$e_user) {
+  $session->msg("d", "Missing user ID.");
+  redirect('users.php');
+}
 
-// Update user password
-if(isset($_POST['update-pass'])) {
-  $req_fields = array('password');
+// Update User basic info
+if (isset($_POST['update'])) {
+  $req_fields = array('name', 'username', 'level');
   validate_fields($req_fields);
-  if(empty($errors)){
-           $id = (int)$e_user['id'];
-     $password = remove_junk($db->escape($_POST['password']));
-     $h_pass   = sha1($password);
-          $sql = "UPDATE users SET password='{$h_pass}' WHERE id='{$db->escape($id)}'";
-       $result = $db->query($sql);
-        if($result && $db->affected_rows() === 1){
-          $session->msg('s',"User password has been updated ");
-          redirect('edit_user.php?id='.(int)$e_user['id'], false);
-        } else {
-          $session->msg('d',' Sorry failed to updated user password!');
-          redirect('edit_user.php?id='.(int)$e_user['id'], false);
-        }
+
+  if (empty($errors)) {
+    $id = (int)$e_user['id'];
+    $name = remove_junk($db->escape($_POST['name']));
+    $username = remove_junk($db->escape($_POST['username']));
+    $level = (int)$db->escape($_POST['level']);
+    $status = remove_junk($db->escape($_POST['status']));
+
+    $sql = "UPDATE users SET name = ?, username = ?, user_level = ?, status = ? WHERE id = ?";
+    $stmt = $db->con->prepare($sql);
+    $stmt->bind_param("ssiii", $name, $username, $level, $status, $id);
+
+    if ($stmt->execute()) {
+      $session->msg('s', "Account Updated");
+      redirect('edit_user.php?id=' . (int)$e_user['id'], false);
+    } else {
+      error_log("Database Error: " . $db->con->error);
+      $session->msg('d', 'Failed to update account!');
+    }
   } else {
-    $session->msg("d", $errors);
-    redirect('edit_user.php?id='.(int)$e_user['id'],false);
+    foreach ($errors as $error) {
+      echo "<p style='color: red;'>$error</p>";
+    }
   }
 }
 
+// Update user password
+if (isset($_POST['update-pass'])) {
+  $req_fields = array('password');
+  validate_fields($req_fields);
+
+  if (empty($errors)) {
+    $id = (int)$e_user['id'];
+    $password = remove_junk($db->escape($_POST['password']));
+    $h_pass = password_hash($password, PASSWORD_DEFAULT);
+
+    $sql = "UPDATE users SET password = ? WHERE id = ?";
+    $stmt = $db->con->prepare($sql);
+    $stmt->bind_param("si", $h_pass, $id);
+
+    if ($stmt->execute()) {
+      $session->msg('s', "User password has been updated");
+      redirect('edit_user.php?id=' . (int)$e_user['id'], false);
+    } else {
+      error_log("Database Error: " . $db->con->error);
+      $session->msg('d', 'Failed to update password!');
+    }
+  } else {
+    foreach ($errors as $error) {
+      echo "<p style='color: red;'>$error</p>";
+    }
+  }
+}
 ?>
+
 <?php include_once('layouts/header.php'); ?>
- <div class="row">
-   <div class="col-md-12"> <?php echo display_msg($msg); ?> </div>
-  <div class="col-md-6">
-     <div class="panel panel-default">
-       <div class="panel-heading">
-        <strong>
-          <span class="glyphicon glyphicon-th"></span>
-          Update <?php echo remove_junk(ucwords($e_user['name'])); ?> Account
-        </strong>
-       </div>
-       <div class="panel-body">
-          <form method="post" action="edit_user.php?id=<?php echo (int)$e_user['id'];?>" class="clearfix">
-            <div class="form-group">
-                  <label for="name" class="control-label">Name</label>
-                  <input type="name" class="form-control" name="name" value="<?php echo remove_junk(ucwords($e_user['name'])); ?>">
-            </div>
-            <div class="form-group">
-                  <label for="username" class="control-label">Username</label>
-                  <input type="text" class="form-control" name="username" value="<?php echo remove_junk(ucwords($e_user['username'])); ?>">
-            </div>
-            <div class="form-group">
-              <label for="level">User Role</label>
-                <select class="form-control" name="level">
-                  <?php foreach ($groups as $group ):?>
-                   <option <?php if($group['group_level'] === $e_user['user_level']) echo 'selected="selected"';?> value="<?php echo $group['group_level'];?>"><?php echo ucwords($group['group_name']);?></option>
-                <?php endforeach;?>
-                </select>
-            </div>
-            <div class="form-group">
-              <label for="status">Status</label>
-                <select class="form-control" name="status">
-                  <option <?php if($e_user['status'] === '1') echo 'selected="selected"';?>value="1">Active</option>
-                  <option <?php if($e_user['status'] === '0') echo 'selected="selected"';?> value="0">Deactive</option>
-                </select>
-            </div>
-            <div class="form-group clearfix">
-                    <button type="submit" name="update" class="btn btn-info">Update</button>
-            </div>
-        </form>
-       </div>
-     </div>
+
+<div class="row">
+  <div class="col xs-12">
+    <?php echo display_msg($msg); ?>
   </div>
-  <!-- Change password form -->
-  <div class="col-md-6">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <strong>
-          <span class="glyphicon glyphicon-th"></span>
-          Change <?php echo remove_junk(ucwords($e_user['name'])); ?> password
-        </strong>
-      </div>
-      <div class="panel-body">
-        <form action="edit_user.php?id=<?php echo (int)$e_user['id'];?>" method="post" class="clearfix">
-          <div class="form-group">
-                <label for="password" class="control-label">Password</label>
-                <input type="password" class="form-control" name="password" placeholder="Type user new password">
+</div>
+<div class="workboard__heading">
+  <h1 class="workboard__title">Update <?php echo remove_junk(ucwords($e_user['name'])); ?> Account</h1>
+</div>
+<div class="workpanel profile__main adm-dashboard__main">
+  <div class="row">
+    <!-- User Details Form -->
+    <div class="col xs-12 sm-6">
+      <form class="general--form access__form" method="post" action="edit_user.php?id=<?php echo (int)$e_user['id']; ?>" class="clearfix">
+        <div class="row">
+          <!-- Name Field -->
+          <div class="col xs-12 sm-6">
+            <div class="form__module">
+              <label for="name" class="form__label">Name</label>
+              <div class="form__set">
+                <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                placeholder="Full Name (e.g., John Doe)" 
+                value="<?php echo remove_junk(ucwords($e_user['name'])); ?>" 
+                required>
+              </div>
+            </div>
           </div>
-          <div class="form-group clearfix">
-                  <button type="submit" name="update-pass" class="btn btn-danger pull-right">Change</button>
+          <!-- Username Field -->
+          <div class="col xs-12 sm-6">
+            <div class="form__module">
+              <label for="username" class="form__label">Username</label>
+              <div class="form__set">
+                <input 
+                type="text" 
+                id="username" 
+                name="username" 
+                placeholder="Username (e.g., johndoe123)" 
+                value="<?php echo remove_junk(ucwords($e_user['username'])); ?>" 
+                required>
+              </div>
+            </div>
           </div>
-        </form>
+          <!-- User Role Field -->
+          <div class="col xs-12 sm-6">
+            <div class="form__module">
+              <label for="level" class="form__label">User Role</label>
+              <select class="form-control" id="level" name="level" required>
+                <?php foreach ($groups as $group) : ?>
+                  <option 
+                  value="<?php echo $group['group_level']; ?>" 
+                  <?php if ($group['group_level'] === $e_user['user_level']) echo 'selected'; ?>>
+                  <?php echo ucwords($group['group_name']); ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+        </div>
+        <!-- Status Field -->
+        <div class="col xs-12 sm-6">
+          <div class="form__module">
+            <label for="status" class="form__label">Status</label>
+            <select class="form-control" id="status" name="status" required>
+              <option value="1" <?php if ($e_user['status'] === '1') echo 'selected'; ?>>Active</option>
+              <option value="0" <?php if ($e_user['status'] === '0') echo 'selected'; ?>>Deactive</option>
+            </select>
+          </div>
+        </div>
       </div>
+      <div class="row">
+        <div class="col xs-12 sm-5">
+          <div class="site-panel">
+            <div class="form__action">
+              <input type="submit" class="button primary-tint" name="update" value="Save">
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="row">
+  <!-- User Details Form -->
+  <div class="col xs-12">
+    <div class="recent-orders">
+      <h2 class="subheading">Change <?php echo remove_junk(ucwords($e_user['name'])); ?> password</h2>
     </div>
   </div>
+  <div class="col xs-12 sm-6">
+    <form class="general--form access__form" action="edit_user.php?id=<?php echo (int)$e_user['id'];?>" method="post">
+      <div class="row">
+        <!-- Name Field -->
+        <div class="col xs-12 sm-6">
+          <div class="form__module">
+            <label class="form__label"for="password" >Password</label>
+            <div class="form__set">
+              <input type="password" name="password" placeholder="User's new password">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col xs-12 sm-5">
+          <div class="site-panel">
+            <div class="form__action">
+              <input type="submit" class="button primary-tint" name="update-pass" value="Change">
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
 
- </div>
+
 <?php include_once('layouts/footer.php'); ?>
