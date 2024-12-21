@@ -27,6 +27,24 @@ $sales = monthlySales($year);
 					</div>
 				</div>
 				<div class="row">
+					<div class="col xs-12">
+          <form method="POST" action="ajax.php" autocomplete="off" id="sug-form">
+            <div class="site-panel">
+              <div class="form__module">
+                <div class="form__set ">
+                  <button type="submit" class="icon-search"></button>
+                  <input class="search-input" type="text" name="title" placeholder="Search">
+                </div>
+                <div id="result" class="list-group"></div>
+              </div>
+              <div class="downoad">
+                <a href=""><span class="icon-download"></span>Download</a>
+              </div>
+            </div>
+          </form>
+					</div>
+				</div>
+				<div class="row">
 					<div class="col xs-12 ">
 						<div class="questionaries__showcase" id="question_popup" style="display: flex;">
 							<div class="tbl-wrap">

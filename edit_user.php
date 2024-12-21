@@ -150,7 +150,7 @@ if (isset($_POST['update-pass'])) {
         <div class="col xs-12 sm-5">
           <div class="site-panel">
             <div class="form__action">
-              <input type="submit" class="button primary-tint" name="update" value="Save">
+              <input type="submit" class="button primary-tint" name="update" value="Update">
             </div>
           </div>
         </div>

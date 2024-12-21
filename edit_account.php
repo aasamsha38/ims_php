@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset'])) {
                 <input type="submit" class="button tertiary-line" value="Reset Password" name="reset">
               </div>
               <div class="form__action">
-                <input type="submit" class="button primary-tint" name="update" value="Save">
+                <input type="submit" class="button primary-tint" name="update" value="Update">
               </div>
             </div>
           </div>

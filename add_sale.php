@@ -36,50 +36,33 @@ if (isset($_POST['add_sale'])) {
 
   ?>
   <?php include_once('layouts/header.php'); ?> 
+  <div class="row">
+    <div class="col-md-6">
+      <?php echo display_msg($msg); ?>
+    </div>
+  </div>
   <div class="workboard__heading">
     <h1 class="workboard__title">Sales</h1>
   </div>
   <div class="workpanel inventory__main">
-   <div class="overall-info">
-    <div class="row">
-     <div class="col xs-12">
+    <div class="meta-info">
       <div class="row">
-        <div class="col-md-6">
-          <?php echo display_msg($msg); ?>
+        <div class="col xs-12">
           <form method="POST" action="ajax.php" autocomplete="off" id="sug-form">
-            <div class="form-group">
-              <div class="input-group">
-                <span class="input-group-btn">
-                  <button type="submit" class="btn btn-primary">Find It</button>
-                </span>
-                <input type="text" id="sug_input" class="form-control" name="title"  placeholder="Search">
+            <div class="site-panel">
+              <div class="form__module">
+                <div class="form__set ">
+                  <button type="submit" class="icon-search"></button>
+                  <input class="search-input" type="text" name="title" placeholder="Search">
+                </div>
+                <div id="result" class="list-group"></div>
               </div>
-              <div id="result" class="list-group"></div>
+              <div class="downoad">
+                <a href=""><span class="icon-download"></span>Download</a>
+              </div>
             </div>
           </form>
         </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-<div class="meta-info">
-  <div class="meta-info">
-    <div class="row">
-      <div class="col xs-12">
-        <form method="POST" action="ajax.php" autocomplete="off" id="sug-form">
-          <div class="site-panel">
-            <div class="form__module">
-              <div class="form__set ">
-                <span class="icon-search"></span>
-                <input class="search-input" type="search" placeholder="Search">
-              </div>
-            </div>
-            <div class="downoad">
-              <a href=""><span class="icon-download"></span>Download</a>
-            </div>
-          </div>
-        </form>
       </div>
     </div>
     <div class="row">
@@ -98,20 +81,20 @@ if (isset($_POST['add_sale'])) {
            </thead>
            <tbody  id="product_info"> 
             <tr>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td>ab</td>
+              <td>cd</td>
+              <td>ee</td>
+              <td>fg</td>
+              <td>hh</td>
+              <td>jj</td>
             </tr></tbody>
-         </table>
-       </form>
-     </div>
-   </div>
- </div>
+          </table>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
-</div>
+
 </div>
 
 

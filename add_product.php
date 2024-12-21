@@ -6,6 +6,13 @@ page_require_level(2);
 $all_categories = find_all('categories');
 $all_photo = find_all('media');
 
+// Handle Discard button click
+if (isset($_POST['discard'])) {
+    // Redirect to product.php
+    redirect('product.php', false);
+    exit;
+}
+
 if (isset($_POST['add_product'])) {
   $req_fields = array('product-title', 'product-categorie', 'product-quantity', 'buying-price', 'saleing-price');
   validate_fields($req_fields);
@@ -66,7 +73,7 @@ if (isset($_POST['add_product'])) {
                       <input
                         type="submit"
                         class="button tertiary-line"
-                        value="Discard" />
+                        value="Discard" name="discard" />
                     </div>
                     <div class="form__action">
                       <input

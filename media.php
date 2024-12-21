@@ -41,15 +41,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 <div class="meta-info">
   <div class="row">
     <div class="col xs-12">
-      <form action="get">
+      <form method="POST" action="ajax.php" autocomplete="off" id="sug-form">
         <div class="site-panel">
           <div class="form__module">
             <div class="form__set ">
-              <span class="icon-search"></span>
-              <input class="search-input" type="search" placeholder="Search">
+              <button type="submit" class="icon-search"></button>
+              <input class="search-input" type="text" name="title" placeholder="Search">
             </div>
+            <div id="result" class="list-group"></div>
           </div>
-
+          <div class="downoad">
+            <a href=""><span class="icon-download"></span>Download</a>
+          </div>
         </div>
       </form>
     </div>

@@ -1,41 +1,46 @@
 <?php
-  $page_title = 'Add User';
-  require_once('includes/load.php');
-  // Checkin What level user has permission to view this page
-  page_require_level(1);
-  $groups = find_all('user_groups');
-?>
-<?php
-  if(isset($_POST['add_user'])){
+$page_title = 'Add User';
+require_once('includes/load.php');
+// Checkin What level user has permission to view this page
+page_require_level(1);
+$groups = find_all('user_groups');
 
-   $req_fields = array('full-name','username','password','level' );
-   validate_fields($req_fields);
+// Handle Discard button click
+if (isset($_POST['discard'])) {
+    // Redirect to users.php
+    redirect('users.php', false);
+    exit;
+}
 
-   if(empty($errors)){
-           $name   = remove_junk($db->escape($_POST['full-name']));
-       $username   = remove_junk($db->escape($_POST['username']));
-       $password   = remove_junk($db->escape($_POST['password']));
-       $user_level = (int)$db->escape($_POST['level']);
-       $password = sha1($password);
-        $query = "INSERT INTO users (";
-        $query .="name,username,password,user_level,status";
-        $query .=") VALUES (";
-        $query .=" '{$name}', '{$username}', '{$password}', '{$user_level}','1'";
-        $query .=")";
-        if($db->query($query)){
-          //sucess
-          $session->msg('s',"User account has been creted! ");
-          redirect('add_user.php', false);
+// Handle Add User button click
+if (isset($_POST['add_user'])) {
+    $req_fields = array('full-name', 'username', 'password', 'level');
+    validate_fields($req_fields);
+
+    if (empty($errors)) {
+        $name = remove_junk($db->escape($_POST['full-name']));
+        $username = remove_junk($db->escape($_POST['username']));
+        $password = remove_junk($db->escape($_POST['password']));
+        $user_level = (int)$db->escape($_POST['level']);
+        $password = sha1($password);
+
+        $query = "INSERT INTO users (name, username, password, user_level, status) ";
+        $query .= "VALUES ('{$name}', '{$username}', '{$password}', '{$user_level}', '1')";
+
+        if ($db->query($query)) {
+            // Success
+            $session->msg('s', "User account has been created!");
+            redirect('add_user.php', false);
         } else {
-          //failed
-          $session->msg('d',' Sorry failed to create account!');
-          redirect('add_user.php', false);
+            // Failed
+            $session->msg('d', 'Sorry, failed to create account!');
+            redirect('add_user.php', false);
         }
-   } else {
-     $session->msg("d", $errors);
-      redirect('add_user.php',false);
-   }
- }
+    } else {
+        $session->msg("d", $errors);
+        redirect('add_user.php', false);
+    }
+}
 ?>
 <?php include_once('layouts/header.php'); ?>
 				<div class="workboard__heading">
@@ -54,7 +59,7 @@
 											<div class="col xs-12 sx-6">
 												<div class="site-panel">
 													<div class="form__action">
-														<input type="submit" class="button tertiary-line" value="Discard">
+														<input type="submit" name="discard" class="button tertiary-line" value="Discard">
 													</div>
 													<div class="form__action">
 														<input type="submit" name="add_user" class="button primary-tint" value="Save">
