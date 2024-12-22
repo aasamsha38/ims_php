@@ -4,12 +4,41 @@ require_once('includes/load.php');
 page_require_level(2);
 $products = join_product_table();
 
+// Establish database connection
+$con = mysqli_connect("localhost", "root", "", "inventory_system");
+
+// Check connection
+if (!$con) {
+	die("Connection failed: " . mysqli_connect_error());
+}
+
 // Navigation to add_product.php
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
 	header("Location: add_product.php");
 	exit;
 }
+
+// Handle the search query
+$search_query = '';
+if (isset($_POST["submit"])) {
+	$search_query = mysqli_real_escape_string($con, $_POST["title"]);
+	$sql = "SELECT products.id, products.media_id, products.name, products.date, products.quantity, products.buy_price, products.sale_price, categories.name AS categorie
+	FROM products
+	LEFT JOIN categories ON products.categorie_id = categories.id
+	WHERE products.id = '$search_query' 
+	OR products.name LIKE '%$search_query%' 
+	OR categories.name LIKE '%$search_query%'";
+	$search_result = mysqli_query($con, $sql);
+} else {
+	$search_result = null;
+}
+
+$total_products_query = "SELECT COUNT(*) AS total_products FROM products";
+$total_products_result = mysqli_query($con, $total_products_query);
+$total_products_row = mysqli_fetch_assoc($total_products_result);
+$total_products = $total_products_row['total_products'];
 ?>
+
 <?php include_once('layouts/header.php'); ?>
 <!-- <?php echo display_msg($msg); ?> -->
 <div class="workboard__heading">
@@ -59,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
 								<div class="infocounter__details">
 									<div class="overall-meta">
 										<div class="meta-info">
-											<span class="counter">868</span>
+											<span class="counter"><?php echo $total_products; ?></span>
 										</div>
 										<div class="last_updated">
 											<small class="text-muted">Last 7 Days</small>
@@ -136,12 +165,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
 	<div class="meta-info">
 		<div class="row">
 			<div class="col xs-12">
-				<form method="POST" action="ajax.php" autocomplete="off" id="sug-form">
+				<form method="POST"  autocomplete="off" id="sug-form">
 					<div class="site-panel">
 						<div class="form__module">
 							<div class="form__set ">
-								<button type="submit" class="icon-search"></button>
-								<input class="search-input" type="text" name="title" placeholder="Search">
+								<button type="submit"  name="submit" class="icon-search"></button>
+								<input class="search-input" id="search-input" type="text" name="title" placeholder="Search">
+								<ul id="suggestions" class="list-group position-absolute w-100" style="z-index: 1000;"></ul>
 							</div>
 							<div id="result" class="list-group"></div>
 						</div>
@@ -171,34 +201,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
 								</tr>
 							</thead>
 							<tbody>
-								<?php foreach ($products as $product):?>
-									<tr>
-										<td class="text-center"><?php echo count_id();?></td>
-										<td>
-											<?php if($product['media_id'] === '0'): ?>
-												<img class="img-avatar img-circle profile-photo" src="uploads/products/no_image.png" alt="">
-											<?php else: ?>
-												<img class="img-avatar img-circle profile-photo" src="uploads/products/<?php echo $product['image']; ?>" alt="">
-											<?php endif; ?>
+								<?php
+    // Display search results or all products if no search
+								if ($search_result && mysqli_num_rows($search_result) > 0) {
+									while ($row = mysqli_fetch_assoc($search_result)) {
+										$formatted_date = read_date($row['date']);
+										echo "<tr>
+										<td>{$row['id']}</td>
+										<td>";
+            // Display image based on media_id
+										if ($row['media_id'] == '0' || empty($row['media_id'])) {
+        // Display a default image
+											echo "<img class='img-avatar img-circle profile-photo' src='uploads/products/no_image.png' alt='No image available'>";
+										} else {
+        // Check if the file exists at the given path
+											$image_path = 'uploads/products/' . $row['media_id'];
+
+        // Check if file exists and is accessible
+											if (file_exists($image_path)) {
+												echo "<img class='img-avatar img-circle profile-photo' src='{$image_path}' alt='{$row['name']}'>";
+											} else {
+            // If file doesn't exist, show the default image
+												echo "<img class='img-avatar img-circle profile-photo' src='uploads/products/no_image.png' alt='Image not found'>";
+											}
+										}
+										echo "</td>
+										<td>{$row['name']}</td>
+										<td>{$row['categorie']}</td>
+										<td>{$row['quantity']}</td>
+										<td>{$row['buy_price']}</td>
+										<td>{$row['sale_price']}</td>
+										<td>{$formatted_date}</td>
+										<td class='text-center'>
+										<div class='btn-group'>
+										<a href='edit_product.php?id={$row['id']}' class='btn btn-info btn-xs' title='Edit' data-toggle='tooltip'>
+										<span class='icon-edit'></span>
+										</a>
+										<a href='delete_product.php?id={$row['id']}' class='btn btn-danger btn-xs' title='Delete' data-toggle='tooltip'>
+										<span class='icon-trash'></span>
+										</a>
+										</div>
 										</td>
-										<td> <?php echo remove_junk($product['name']); ?></td>
-										<td class="text-center"> <?php echo remove_junk($product['categorie']); ?></td>
-										<td class="text-center"> <?php echo remove_junk($product['quantity']); ?></td>
-										<td class="text-center"> <?php echo remove_junk($product['buy_price']); ?></td>
-										<td class="text-center"> <?php echo remove_junk($product['sale_price']); ?></td>
-										<td class="text-center"> <?php echo read_date($product['date']); ?></td>
-										<td class="text-center">
-											<div class="btn-group">
-												<a href="edit_product.php?id=<?php echo (int)$product['id'];?>" class="btn btn-info btn-xs"  title="Edit" data-toggle="tooltip">
-													<span class="icon-edit"></span>
-												</a>
-												<a href="delete_product.php?id=<?php echo (int)$product['id'];?>" class="btn btn-danger btn-xs"  title="Delete" data-toggle="tooltip">
-													<span class="icon-trash"></span>
-												</a>
-											</div>
+										</tr>";
+									}
+								} else {
+        // Show all products if no search
+									foreach ($products as $product) {
+										$formatted_date = read_date($product['date']);
+										echo "<tr>
+										<td>" . remove_junk($product['id']) . "</td>
+										<td>";
+            // Display image based on media_id
+										if ($product['media_id'] == '0' || empty($product['media_id'])) {
+											echo "<img class='img-avatar img-circle profile-photo' src='uploads/products/no_image.png' alt='No image available'>";
+										} else {
+											echo "<img class='img-avatar img-circle profile-photo' src='uploads/products/{$product['media_id']}' alt='{$product['name']}'>";
+										}
+										echo "</td>
+										<td>" . remove_junk($product['name']) . "</td>
+										<td class='text-center'>" . remove_junk($product['categorie']) . "</td>
+										<td class='text-center'>" . remove_junk($product['quantity']) . "</td>
+										<td class='text-center'>" . remove_junk($product['buy_price']) . "</td>
+										<td class='text-center'>" . remove_junk($product['sale_price']) . "</td>
+										<td class='text-center'>{$formatted_date}</td>
+										<td class='text-center'>
+										<div class='btn-group'>
+										<a href='edit_product.php?id=" . (int)$product['id'] . "' class='btn btn-info btn-xs' title='Edit' data-toggle='tooltip'>
+										<span class='icon-edit'></span>
+										</a>
+										<a href='delete_product.php?id=" . (int)$product['id'] . "' class='btn btn-danger btn-xs' title='Delete' data-toggle='tooltip'>
+										<span class='icon-trash'></span>
+										</a>
+										</div>
 										</td>
-									</tr>
-								<?php endforeach; ?>
+										</tr>";
+									}
+								}
+								?>
 							</tbody>
 						</table>
 					</div>
@@ -207,5 +286,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
 		</div>
 	</div>
 </div>
-
-<?php include_once('layouts/footer.php'); ?>

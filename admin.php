@@ -1,14 +1,21 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 $page_title = 'Admin Home Page';
 require_once('includes/load.php');
 page_require_level(1);
 
-$c_categorie     = count_by_id('categories');
-$c_product       = count_by_id('products');
-$c_sale          = count_by_id('sales');
-$c_user          = count_by_id('users');
-$products_sold   = find_higest_saleing_product('10');
-$recent_products = find_recent_product_added('5');
+$last_user_update = get_last_user_update_time();
+$last_product_update = get_last_product_update_time();
+$last_sale_update = get_last_sale_update_time();
+$last_category_update = get_last_categories_update_time(); 
+
+  $c_categorie     = count_by_id('categories');
+  $c_product       = count_by_id('products');
+  $c_sale          = count_by_id('sales');
+  $c_user          = count_by_id('users');
+  $products_sold   = find_higest_saleing_product('10');
+  $recent_products = find_recent_product_added('5');
 $recent_sales    = find_recent_sale_added('5'); // Fixed missing semicolon
 ?>
 <?php include_once('layouts/header.php'); ?>
@@ -42,7 +49,7 @@ $recent_sales    = find_recent_sale_added('5'); // Fixed missing semicolon
                       <span class="icon-user"></span>
                     </div>
                   </div>
-                  <small class="text-muted">Last 24 hours</small>
+                  <small class="text-muted"><?php echo date('M d, Y h:i A', strtotime($last_user_update)); ?></small>
                 </div>
               </div>
             </div>
@@ -55,10 +62,10 @@ $recent_sales    = find_recent_sale_added('5'); // Fixed missing semicolon
                       <h1><?php echo $c_categorie['total']; ?></h1>
                     </div>
                     <div class="progress">
-                      <span class="icon-filter_list"></span>
+                      <span class="icon-product"></span>
                     </div>
                   </div>
-                  <small class="text-muted">Last 24 hours</small>
+                  <small class="text-muted"><?php echo date('M d, Y h:i A', strtotime($last_category_update)); ?></small>
                 </div>
               </div>
             </div>
@@ -71,10 +78,10 @@ $recent_sales    = find_recent_sale_added('5'); // Fixed missing semicolon
                       <h1><?php echo $c_product['total']; ?></h1>
                     </div>
                     <div class="progress">
-                      <span class="icon-product"></span>
+                      <span class="icon-order"></span>
                     </div>
                   </div>
-                  <small class="text-muted">Last 24 hours</small>
+                  <small class="text-muted"><?php echo date('M d, Y h:i A', strtotime($last_product_update)); ?></small>
                 </div>
               </div>
             </div>
@@ -90,7 +97,7 @@ $recent_sales    = find_recent_sale_added('5'); // Fixed missing semicolon
                       <span class="icon-receipt"></span>
                     </div>
                   </div>
-                  <small class="text-muted">Last 24 hours</small>
+                  <small class="text-muted"><?php echo date('M d, Y h:i A', strtotime($last_sale_update)); ?></small>
                 </div>
               </div>
             </div>

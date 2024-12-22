@@ -1,4 +1,5 @@
 <?php
+$query = "SELECT * FROM categories";
 require_once('includes/load.php');
 
 /*--------------------------------------------------------------*/
@@ -362,4 +363,40 @@ function  monthlySales($year)
   $sql .= " GROUP BY DATE_FORMAT( s.date,  '%c' ),s.product_id";
   $sql .= " ORDER BY date_format(s.date, '%c' ) ASC";
   return find_by_sql($sql);
+}
+
+function get_last_user_update_time() {
+    global $db;
+    $sql = "SELECT MAX(last_login) AS last_update FROM users";
+    $result = $db->query($sql);
+    return $db->fetch_assoc($result)['last_update'];
+}
+
+function get_last_product_update_time() {
+    global $db;
+    $sql = "SELECT MAX(date) AS last_update FROM products";
+    $result = $db->query($sql);
+    return $db->fetch_assoc($result)['last_update'];
+}
+
+function get_last_sale_update_time() {
+    global $db;
+    $sql = "SELECT MAX(date) AS last_update FROM sales";
+    $result = $db->query($sql);
+    return $db->fetch_assoc($result)['last_update'];
+}
+
+function get_last_categories_update_time() {
+    global $db;
+    try {
+        $result = $db->query("SELECT MAX(date) AS last_update FROM categories");
+        if ($db->num_rows($result) > 0) {
+            $row = $db->fetch_assoc($result);
+            // Return the last update or a default date if null
+            return $row['last_update'] ?? "2024-12-01 00:00:00";  // Default date if null
+        }
+    } catch (mysqli_sql_exception $e) {
+        error_log("Error fetching last update time: " . $e->getMessage());
+    }
+    return "2024-12-01 00:00:00";  // Return a default value if no update time is found
 }
