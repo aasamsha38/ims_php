@@ -1,5 +1,4 @@
 <?php
-$query = "SELECT * FROM categories";
 require_once('includes/load.php');
 
 /*--------------------------------------------------------------*/

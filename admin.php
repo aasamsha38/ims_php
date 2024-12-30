@@ -49,7 +49,7 @@ $recent_sales    = find_recent_sale_added('5'); // Fixed missing semicolon
                       <span class="icon-user"></span>
                     </div>
                   </div>
-                  <small class="text-muted"><?php echo date('M d, Y h:i A', strtotime($last_user_update)); ?></small>
+                  <small class="text-muted"><?php echo date('M d, Y ', strtotime($last_user_update)); ?></small>
                 </div>
               </div>
             </div>
@@ -65,7 +65,7 @@ $recent_sales    = find_recent_sale_added('5'); // Fixed missing semicolon
                       <span class="icon-product"></span>
                     </div>
                   </div>
-                  <small class="text-muted"><?php echo date('M d, Y h:i A', strtotime($last_category_update)); ?></small>
+                  <small class="text-muted"><?php echo date('M d, Y ', strtotime($last_category_update)); ?></small>
                 </div>
               </div>
             </div>
@@ -81,7 +81,7 @@ $recent_sales    = find_recent_sale_added('5'); // Fixed missing semicolon
                       <span class="icon-order"></span>
                     </div>
                   </div>
-                  <small class="text-muted"><?php echo date('M d, Y h:i A', strtotime($last_product_update)); ?></small>
+                  <small class="text-muted"><?php echo date('M d, Y ', strtotime($last_product_update)); ?></small>
                 </div>
               </div>
             </div>
@@ -97,7 +97,7 @@ $recent_sales    = find_recent_sale_added('5'); // Fixed missing semicolon
                       <span class="icon-receipt"></span>
                     </div>
                   </div>
-                  <small class="text-muted"><?php echo date('M d, Y h:i A', strtotime($last_sale_update)); ?></small>
+                  <small class="text-muted"><?php echo date('M d, Y ', strtotime($last_sale_update)); ?></small>
                 </div>
               </div>
             </div>

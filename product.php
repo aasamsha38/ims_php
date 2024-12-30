@@ -33,10 +33,19 @@ if (isset($_POST["submit"])) {
 	$search_result = null;
 }
 
+$last_category_update = get_last_categories_update_time(); 
+$last_product_update = get_last_product_update_time();
+$c_categorie = count_by_id('categories');
 $total_products_query = "SELECT COUNT(*) AS total_products FROM products";
 $total_products_result = mysqli_query($con, $total_products_query);
 $total_products_row = mysqli_fetch_assoc($total_products_result);
 $total_products = $total_products_row['total_products'];
+
+// Calculate total revenue
+$total_revenue_query = "SELECT SUM(sale_price * quantity) AS total_revenue FROM products";
+$total_revenue_result = mysqli_query($con, $total_revenue_query);
+$total_revenue_row = mysqli_fetch_assoc($total_revenue_result);
+$total_revenue = $total_revenue_row['total_revenue'] ?? 0;
 ?>
 
 <?php include_once('layouts/header.php'); ?>
@@ -44,7 +53,7 @@ $total_products = $total_products_row['total_products'];
 <div class="workboard__heading">
 	<h1 class="workboard__title">Time Tracking</h1>
 </div>
-<div class="workpanel inventory__main">
+<div class="workpanel inventory__main ">
 	<div class="overall-info">
 		<div class="row">
 			<div class="col xs-12">
@@ -71,19 +80,19 @@ $total_products = $total_products_row['total_products'];
 							<div class="infocounter">
 								<div class="infocounter__title">
 									<span class="text">Category</span>
-									<a href="#"><span class="icon-ellipses"></span></a>
+									<a href="categorie.php"><span class="icon-ellipses"></span></a>
 								</div>
 								<div class="infocounter__details">
-									<span class="counter">30</span>
+									<span class="counter"><?php echo $c_categorie['total']; ?></span>
 								</div>
-								<small class="text-muted">Last 24 hours</small>
+								<small class="text-muted"><?php echo date('M d,h:i A', strtotime($last_category_update)); ?></small>
 							</div>
 						</div>
 						<div class="col xs-12 sx-6 sm-3">
 							<div class="infocounter">
 								<div class="infocounter__title">
 									<span class="text"style="color: #fdb000;">Total Products</span>
-									<a href="#"><span class="icon-ellipses"></span></a>
+									<!-- <a href="#"><span class="icon-ellipses"></span></a> -->
 								</div>
 								<div class="infocounter__details">
 									<div class="overall-meta">
@@ -91,12 +100,12 @@ $total_products = $total_products_row['total_products'];
 											<span class="counter"><?php echo $total_products; ?></span>
 										</div>
 										<div class="last_updated">
-											<small class="text-muted">Last 7 Days</small>
+											<small class="text-muted"><?php echo date('M d', strtotime($last_product_update)); ?></small>
 										</div>
 									</div>
 									<div class="overall-meta">
 										<div class="meta-info">
-											<span class="counter">Rs.25000</span>
+											<span class="counter"><?php echo "Rs." . number_format($total_revenue, 2); ?></span>
 										</div>
 										<div class="last_updated">
 											<small class="text-muted">Reveneu</small>
@@ -168,8 +177,8 @@ $total_products = $total_products_row['total_products'];
 				<form method="POST"  autocomplete="off" id="sug-form">
 					<div class="site-panel">
 						<div class="form__module">
-							<div class="form__set ">
-								<button type="submit"  name="submit" class="icon-search"></button>
+							<div class="form__set">
+								<button type="submit" name="submit" class="icon-search"></button>
 								<input class="search-input" id="search-input" type="text" name="title" placeholder="Search">
 								<ul id="suggestions" class="list-group position-absolute w-100" style="z-index: 1000;"></ul>
 							</div>
@@ -286,3 +295,5 @@ $total_products = $total_products_row['total_products'];
 		</div>
 	</div>
 </div>
+
+<?php include_once('layouts/footer.php'); ?>

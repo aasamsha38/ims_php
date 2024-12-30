@@ -18,7 +18,7 @@ window.addEventListener("click", function (e) {
   if (!btn.contains(e.target)) classList.remove("active");
 });
 
-
+  //jquery for search menus
   const searchInput = document.getElementById('search-input');
   const suggestionsBox = document.getElementById('suggestions');
 
@@ -54,3 +54,34 @@ window.addEventListener("click", function (e) {
       suggestionsBox.innerHTML = '';
     }
   });
+
+
+//   $(document).ready(function() {
+//     // Attach event listener to the search input
+//     $('#search-input').on('input', function() {
+//         var search_query = $(this).val(); // Get the input value
+
+//         // If the search query is not empty
+//         if (search_query.length > 0) {
+//             $.ajax({
+//                 url: 'search_suggestions.php',  // URL to your backend PHP script
+//                 method: 'POST',
+//                 data: { query: search_query },
+//                 success: function(data) {
+//                     // Populate the dropdown with suggestions
+//                     $('#suggestions').html(data).show();
+//                 }
+//             });
+//         } else {
+//             // If input is empty, hide the suggestions
+//             $('#suggestions').hide();
+//         }
+//     });
+
+//     // Optional: Hide the suggestions when clicking outside of the search box
+//     $(document).on('click', function(e) {
+//         if (!$(e.target).closest('#sug-form').length) {
+//             $('#suggestions').hide();
+//         }
+//     });
+// });
