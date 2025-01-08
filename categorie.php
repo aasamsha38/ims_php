@@ -7,25 +7,30 @@
   $all_categories = find_all('categories')
 ?>
 <?php
- if(isset($_POST['add_cat'])){
+if (isset($_POST['add_cat'])) {
    $req_field = array('categorie-name');
    validate_fields($req_field);
    $cat_name = remove_junk($db->escape($_POST['categorie-name']));
-   if(empty($errors)){
-      $sql  = "INSERT INTO categories (name)";
-      $sql .= " VALUES ('{$cat_name}')";
-      if($db->query($sql)){
+   
+   // Get current date and time
+   $current_date = date('Y-m-d H:i:s');
+
+   if (empty($errors)) {
+      $sql  = "INSERT INTO categories (name, date)";
+      $sql .= " VALUES ('{$cat_name}', '{$current_date}')";
+      
+      if ($db->query($sql)) {
         $session->msg("s", "Successfully Added New Category");
-        redirect('categorie.php',false);
+        redirect('categorie.php', false);
       } else {
         $session->msg("d", "Sorry Failed to insert.");
-        redirect('categorie.php',false);
+        redirect('categorie.php', false);
       }
    } else {
      $session->msg("d", $errors);
-     redirect('categorie.php',false);
+     redirect('categorie.php', false);
    }
- }
+}
 ?>
 <?php include_once('layouts/header.php'); ?>
      <div class="col-md-12">
