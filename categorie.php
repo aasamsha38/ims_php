@@ -50,13 +50,11 @@ if (isset($_POST['add_cat'])) {
 													<span>New Category</span>
 												</div>
 												<div class="col xs-12 sx-6">
-													<!-- <form action="get"> -->
 														<div class="site-panel">
 															<div class="form__action">
 																<input type="submit"  name="add_cat" class="button primary-tint" value="Save">
 															</div>
 														</div>
-													<!-- </form> -->
 												</div>
 											</div>
 										</div>
@@ -109,7 +107,6 @@ if (isset($_POST['add_cat'])) {
 										</table>
 									</div>
 								</div>
-						
 					</div>
 				</div>
 			</div>

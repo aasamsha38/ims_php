@@ -49,16 +49,6 @@
 					</a>
 				</div>
 			</li>
-
-						<!-- <li class="has-drop">
-							<div class="knav">
-								<a href="orders.php">
-									<span class="icon-order"></span>
-									<span class="txt">Orders</span>
-								</a>
-								<button type="button"><span class="icon-arrow-right"></span></button>
-							</div>
-						</li> -->
 						<li>
 							<div class="knav">
 								<a href="media.php">
