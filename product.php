@@ -7,6 +7,19 @@ $products = join_product_table();
 // Establish database connection
 $con = mysqli_connect("localhost", "root", "", "inventory_system");
 
+if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] == 0) {
+    $upload_dir = 'uploads/products/';
+    $file_name = $_FILES['product_image']['name'];
+    $file_tmp = $_FILES['product_image']['tmp_name'];
+    $file_path = $upload_dir . $file_name;
+
+    if (move_uploaded_file($file_tmp, $file_path)) {
+        echo "File uploaded successfully!";
+    } else {
+        echo "Failed to move file.";
+    }
+}
+
 // Check connection
 if (!$con) {
 	die("Connection failed: " . mysqli_connect_error());

@@ -27,7 +27,7 @@
                 <div class="profile-dropdown">
                   <div onclick="toggle()" class="profile-dropdown-btn">
                     <div class="profile-img">
-                      <img src="images/img1.svg" alt="" />
+                      <img src="uploads/users/<?php echo !empty($user['image']) ? $user['image'] : 'default.jpg'; ?>" alt="Profile Image" />
                     </div>
                   </div>
                   <ul class="profile-dropdown-list">

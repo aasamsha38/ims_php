@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_sale'])) {
 											</div>
 										</div>
 										<div class="downoad">
-											<a href=""><span class="icon-download"></span>Download</a>
+											<a href="" id="download_btn"><span class="icon-download"></span>Download</a>
 										</div>
 									</div>
 								</form>
