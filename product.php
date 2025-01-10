@@ -206,12 +206,13 @@ $total_revenue = $total_revenue_row['total_revenue'] ?? 0;
 		</div>
 		<div class="row">
 			<div class="col xs-12">
-				<div class="questionaries__showcase" id="question_popup" style="display: flex;">
+<div class="questionaries__showcase" id="question_popup" style="display: flex;">
 					<div class="tbl-wrap">
 						<table id="tracking__table">
 							<thead>
 								<tr>
 									<th class="dtser">Product ID</th>
+									<th>barcode</th>
 									<th>Photo</th>
 									<th>Product Title</th>
 									<th>Category</th>
@@ -302,8 +303,6 @@ $total_revenue = $total_revenue_row['total_revenue'] ?? 0;
 								?>
 							</tbody>
 						</table>
-					</div>
-				</div>
 			</div>
 		</div>
 	</div>
