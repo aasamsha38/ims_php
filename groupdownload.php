@@ -12,7 +12,7 @@
 <body>
 	<div id="wrapper">
 		<main id="site__main" class="site__main">
-			<section class="workboard">
+			<section class="workbord" style="margin-top: 20px; padding-right: 30px; border-left: 100 px;height: 100vh; margin: 0 auto; padding: 80px;">>
 				<div class="workboard__heading">
 					<h1 class="workboard__title">Inventory Management System- Group Details</h1>
 				</div>
@@ -26,22 +26,22 @@
 						<div class="col xs-12">
 							<div class="questionaries__showcase" id="question_popup" style="display: flex;">
 								<div class="tbl-wrap">
-									<table id="tracking__table">
+									<table id="table" style="border: 1px solid #f1f1f1;">
 										<thead>
 											<tr>
-                                            <th class="dtser">S.N</th>
-                                            <th class="name">Group Name</th>
-                                            <th class="username">Group Level</th>
-                                            <th class="status">Status</th>
+												<th class="dtser">S.N</th>
+												<th class="name">Group Name</th>
+												<th class="username">Group Level</th>
+												<th class="status">Status</th>
 											</tr>
 										</thead>
 										<tbody>
-											<tr>
-                                                <td>1</td>
-                                                <td>Name</td>
-                                                <td>level</td>
-                                                <td>Status</td>
-                                            </tr>
+											<tr style="text-align: center;">
+												<td>1</td>
+												<td>Name</td>
+												<td>level</td>
+												<td>Status</td>
+											</tr>
 										</tbody>
 									</table>
 								</div>

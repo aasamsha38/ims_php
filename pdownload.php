@@ -12,53 +12,53 @@
 <body>
 	<div id="wrapper">
 		<main id="site__main" class="site__main">
-			<section class="workboard">
-				<div class="workboard__heading">
-					<h1 class="workboard__title">Inventory Management System- Product Details</h1>
-				</div>
-				<div class="workpanel salesreport__main ">
-					<div class="row">
-						<div class="col xs-12 sm-6">
-							<div class="date">
-								<span><strong>PDF of product page:</strong></span>
-							</div>
+			<section class="workbord" style="margin-top: 20px; padding-right: 30px; border-left: 100 px;height: 100vh; margin: 0 auto; padding: 80px;">
+			<div class="workboard__heading">
+				<h1 class="workboard__title" style="text-align:center;">Inventory Management System- Product Details</h1>
+			</div>
+			<div class="workpanel salesreport__main ">
+				<div class="row">
+					<div class="col xs-12 sm-6">
+						<div class="date">
+							<span><strong>PDF of product page:</strong></span>
 						</div>
-						<div class="col xs-12">
-							<div class="questionaries__showcase" id="question_popup" style="display: flex;">
-								<div class="tbl-wrap">
-									<table id="tracking__table">
-										<thead>
-											<tr>
-                                            <th class="dtser">Product ID</th>
-                                            <th>Photo</th>
-                                            <th>Product Title</th>
-                                            <th>Category</th>
-                                            <th>Quantity</th>
-                                            <th>Buying Price</th>
-                                            <th>Selling Price</th>
-                                            <th>Product Added</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-                                                <td>123</td>
-                                                <td><img src="#" alt="mediaimg"></td>
-                                                <td>title</td>
-                                                <td>category</td>
-                                                <td>qty</td>
-                                                <td>buying price</td>
-                                                <td>selling price</td>
-                                                <td>time</td>
-                                            </tr>
-										</tbody>
-									</table>
-								</div>
+					</div>
+					<div class="col xs-12">
+						<div class="questionaries__showcase" id="question_popup" style="display: flex;">
+							<div class="tbl-wrap">
+								<table id="table" style="border: 1px solid #f1f1f1;">
+									<thead>
+										<tr>
+											<th class="dtser">Product ID</th>
+											<th>Photo</th>
+											<th>Product Title</th>
+											<th>Category</th>
+											<th>Quantity</th>
+											<th>Buying Price</th>
+											<th>Selling Price</th>
+											<th>Product Added</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr style="text-align: center;">
+											<td>123</td>
+											<td><img src="#" alt="mediaimg"></td>
+											<td>title</td>
+											<td>category</td>
+											<td>qty</td>
+											<td>buying price</td>
+											<td>selling price</td>
+											<td>time</td>
+										</tr>
+									</tbody>
+								</table>
 							</div>
 						</div>
 					</div>
 				</div>
-			</section>
-		</main>
-	</div>
+			</div>
+		</section>
+	</main>
+</div>
 </body>
 </html>

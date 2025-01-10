@@ -12,7 +12,7 @@
 <body>
 	<div id="wrapper">
 		<main id="site__main" class="site__main">
-			<section class="workboard">
+			<section class="workbord" style="margin-top: 20px; padding-right: 30px; border-left: 100 px;height: 100vh; margin: 0 auto; padding: 80px;">
 				<div class="workboard__heading">
 					<h1 class="workboard__title">Inventory Management System- Selling Product Details</h1>
 				</div>
@@ -26,23 +26,23 @@
 						<div class="col xs-12">
 							<div class="questionaries__showcase" id="question_popup" style="display: flex;">
 								<div class="tbl-wrap">
-									<table id="tracking__table">
+									<table id="table" style="border: 1px solid #f1f1f1;">
 										<thead>
 											<tr>
-                                            <th class="dtser">S.N</th>
-                                            <th>Photo</th>
-                                            <th>Photo Name</th>
-                                            <th>Photo Type</th>
+												<th class="dtser">S.N</th>
+												<th>Photo</th>
+												<th>Photo Name</th>
+												<th>Photo Type</th>
 											</tr>
 										</thead>
 										<tbody>
-											<tr>
-                                                <td>1</td>
-                                                <td><img src="#" alt=""></td>
-                                                <td>Quantity</td>
-                                                <td>Photo Name</td>
-                                                <td>Photo Type</td>
-                                            </tr>
+											<tr style="text-align: center;">
+												<td>1</td>
+												<td><img src="#" alt=""></td>
+												<td>Quantity</td>
+												<td>Photo Name</td>
+												<td>Photo Type</td>
+											</tr>
 										</tbody>
 									</table>
 								</div>
