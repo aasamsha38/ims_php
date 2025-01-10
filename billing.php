@@ -87,48 +87,50 @@ $total_revenue        = $total_revenue_row['total_revenue'] ?? 0;
           </div>
         </div>
       </div>
-      <form  class = "general--form access__form info" method = "post" action= "auth.php">
-        <div   class = "form__module">
-          <label for   = "brcode" class = "form__label">Barcode</label>
-          <div   class = "form__set">
-            <input type  = "text" id= "brcode" placeholder = "12345">
+      <div class="col xs-12 sx-6">
+        <form  class = "general--form access__form info" method = "post" action= "auth.php">
+          <div   class = "form__module">
+            <label for   = "brcode" class = "form__label">Barcode</label>
+            <div   class = "form__set">
+              <input type  = "text" id= "brcode" placeholder = "12345">
+            </div>
           </div>
+          <div    class = "form__module">
+            <label  for   = "prodname" class    = "form__label">Name</label>
+            <select class = "form-control" name = "product-categorie">
+              <option value = "">Select Product</option>
+              <?php foreach ($all_categories as $cat): ?>
+                <option value = "<?php echo (int)$cat['id'] ?>">
+                  <?php echo $cat['name'] ?></option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <div   class = "form__module">
+              <div   class = "form__set">
+                <label for   = "brcode" class = "form__label">MRP</label>
+                <input type  = "text" id = "brcode" placeholder = "Rs.">
+              </div>
+            </div>
+            <div   class = "form__module">
+              <div   class = "form__set">
+                <label for   = "qty" class = "form__label">Quantity</label>
+                <input type  = "text" id = "qty" placeholder = "Qty.">
+              </div>
+            </div>
+            <div   class = "form__module">
+              <div   class = "form__set">
+                <label for   = "avi_qty" class = "form__label">Available Quantity</label>
+                <input type  = "text" id = "avi_qty" placeholder = "Qty.">
+              </div>
+            </div>
+            <div   class = "form__module">
+              <div   class = "form__set">
+                <label for   = "s_price" class = "form__label">Sale Price</label>
+                <input type  = "text" id = "s_price" placeholder = "Rs.">
+              </div>
+            </div>
+          </form>
         </div>
-        <div    class = "form__module">
-          <label  for   = "prodname" class    = "form__label">Name</label>
-          <select class = "form-control" name = "product-categorie">
-            <option value = "">Select Product</option>
-            <?php foreach ($all_categories as $cat): ?>
-              <option value = "<?php echo (int)$cat['id'] ?>">
-                <?php echo $cat['name'] ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-          <div   class = "form__module">
-            <div   class = "form__set">
-              <label for   = "brcode" class = "form__label">MRP</label>
-              <input type  = "text" id = "brcode" placeholder = "Rs.">
-            </div>
-          </div>
-          <div   class = "form__module">
-            <div   class = "form__set">
-              <label for   = "qty" class = "form__label">Quantity</label>
-              <input type  = "text" id = "qty" placeholder = "Qty.">
-            </div>
-          </div>
-          <div   class = "form__module">
-            <div   class = "form__set">
-              <label for   = "avi_qty" class = "form__label">Available Quantity</label>
-              <input type  = "text" id = "avi_qty" placeholder = "Qty.">
-            </div>
-          </div>
-          <div   class = "form__module">
-            <div   class = "form__set">
-              <label for   = "s_price" class = "form__label">Sale Price</label>
-              <input type  = "text" id = "s_price" placeholder = "Rs.">
-            </div>
-          </div>
-        </form>
       </div>
     </div>
     <div class = "col xs-12 sx-6">
@@ -149,10 +151,10 @@ $total_revenue        = $total_revenue_row['total_revenue'] ?? 0;
           </div>
         </div>
       </div>
-      <div class="col xs-12">
+      <div class="col xs-12 ">
         <div class="questionaries__showcase" id="question_popup" style="display: flex;">
           <div class="tbl-wrap">
-            <table id="tracking__table">
+            <table id="table">
               <thead>
                 <tr>
                   <th>Name</th>
@@ -162,7 +164,7 @@ $total_revenue        = $total_revenue_row['total_revenue'] ?? 0;
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <tr style="text-align: center;">
                   <td>Name</td>
                   <td>Quantity</td>
                   <td>Price</td>
@@ -174,32 +176,29 @@ $total_revenue        = $total_revenue_row['total_revenue'] ?? 0;
                     </div>
                   </td>
                 </tr>
-                <tr>
-                  <td></td>
-                  <td colspan="3"><span>Total</span><span>Rs.1000</span></td>
-                </tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
-      <div class="col xs-12 sx-6">
+      <div class="col xs-12 sx-6 sm-3">
         <form  class = "general--form access__form info" method = "post" action= "auth.php">
           <div    class = "form__module">
-            <label  for   = "prodname" class    = "form__label">Name</label>
             <select class = "form-control" name = "product-categorie">
-              <option value = "">Select Product</option>
-              <?php foreach ($all_categories as $cat): ?>
-                <option value = "<?php echo (int)$cat['id'] ?>">
-                  <?php echo $cat['name'] ?></option>
-                <?php endforeach; ?>
-              </select>
-            </div>
-          </form>
+              <option value = "">Cash</option>
+              <option value = "">Online</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="col xs-12 sx-6 sm-3">
+        <div class="ttl_pric">
+          <span>Total</span><span>Rs.1000</span>
         </div>
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <?php include_once('layouts/footer.php'); ?>
