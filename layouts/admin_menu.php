@@ -20,6 +20,7 @@
 				</div>
 				<div class="kdrop sub-menu">
 					<ul>
+						<li><a href="manage_branch.php">Manage Branch</a></li>
 						<li><a href="users.php">Manage Users</a></li>
 						<li><a href="group.php">Manage Groups</a></li>
 					</ul>
