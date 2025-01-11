@@ -26,9 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_group'])) {
 								<input type="submit" class="button primary-tint" value="Add Group" name="add_group">
 							</div>
 						</div>
-						<div class="downoad">
-							<a href="#"><span class="icon-download"></span>Download</a>
-						</div>
 					</div>
 				</form>
 			</div>

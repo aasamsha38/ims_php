@@ -50,9 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             </div>
             <div id="result" class="list-group"></div>
           </div>
-          <div class="downoad">
-            <a href=""><span class="icon-download"></span>Download</a>
-          </div>
         </div>
       </form>
     </div>

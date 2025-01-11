@@ -19,7 +19,7 @@ if (isset($_POST['add_sale'])) {
         $s_date = $db->escape($_POST['date']);
 
         $sql = "INSERT INTO sales (product_id, qty, price, total, date) VALUES 
-                ('{$p_id}', '{$s_qty}', '{$s_price}', '{$s_total}', '{$s_date}')";
+        ('{$p_id}', '{$s_qty}', '{$s_price}', '{$s_total}', '{$s_date}')";
 
         if ($db->query($sql)) {
             update_product_qty($s_qty, $p_id);
@@ -41,18 +41,18 @@ $search_result = null;
 if (isset($_POST["submit"])) {
     $search_query = $db->escape($_POST["title"]);
     $sql = "SELECT 
-                p.id, 
-                p.name, 
-                p.quantity, 
-                p.sale_price, 
-                p.barcode, 
-                m.file_name AS image 
-            FROM products p
-            LEFT JOIN media m ON p.media_id = m.id
-            WHERE 
-                p.id = '{$search_query}' OR 
-                p.name LIKE '%{$search_query}%' OR 
-                p.barcode LIKE '%{$search_query}%'";
+    p.id, 
+    p.name, 
+    p.quantity, 
+    p.sale_price, 
+    p.barcode, 
+    m.file_name AS image 
+    FROM products p
+    LEFT JOIN media m ON p.media_id = m.id
+    WHERE 
+    p.id = '{$search_query}' OR 
+    p.name LIKE '%{$search_query}%' OR 
+    p.barcode LIKE '%{$search_query}%'";
     $search_result = $db->query($sql);
 }
 ?>
@@ -60,7 +60,7 @@ if (isset($_POST["submit"])) {
 <div class="row">
   <div class="col-md-6">
     <?php echo display_msg($msg); ?>
-  </div>
+</div>
 </div>
 <div class="workboard__heading">
   <h1 class="workboard__title">Sales</h1>
@@ -76,18 +76,18 @@ if (isset($_POST["submit"])) {
                 <button type="submit" name="submit" class="icon-search"></button>
                 <input class="search-input" id="search-input" type="text" name="title" placeholder="Search">
                 <ul id="suggestions" class="list-group position-absolute w-100" style="z-index: 1000;"></ul>
-              </div>
-              <div id="result" class="list-group"></div>
             </div>
-            <div class="downoad">
-              <a href=""><span class="icon-download"></span>Download</a>
-            </div>
-          </div>
-        </form>
+            <div id="result" class="list-group"></div>
+        </div>
+        <div class="downoad">
+          <a href=""><span class="icon-download"></span>Download</a>
       </div>
-    </div>
   </div>
-  <div class="row">
+</form>
+</div>
+</div>
+</div>
+<div class="row">
    <div class="col xs-12">
     <div class="questionaries__showcase" id="question_popup" style="display: flex;">
      <div class="tbl-wrap">
@@ -102,53 +102,53 @@ if (isset($_POST["submit"])) {
              <th> Total </th>
              <th> Date </th>
              <th> Action </th>
-           </tr>
-         </thead>
-         <tbody>
-          <?php
+         </tr>
+     </thead>
+     <tbody>
+      <?php
             // Display search results
-            if ($search_result && $db->num_rows($search_result) > 0) {
-                while ($row = $db->fetch_assoc($search_result)) {
-                    echo "<tr>
-                        <td>{$row['name']} ({$row['barcode']})</td>
-                        <td>{$row['sale_price']}</td>
-                        <td>{$row['quantity']}</td>
-                        <td>
-                            <input type='number' name='quantity' class='sell-qty' min='1' max='{$row['quantity']}' placeholder='Enter Qty' required>
-                        </td>
-                        <td>
-                            <input type='text' name='total' class='total-amount' value='0' readonly>
-                        </td>
-                        <td>
-                            <input type='date' name='date' required>
-                        </td>
-                        <td>
-                            <input type='hidden' name='s_id' value='{$row['id']}'>
-                            <input type='hidden' name='price' value='{$row['sale_price']}'>
-                            <button type='submit' name='add_sale' class='btn btn-success btn-sm'>Add</button>
-                        </td>
-                    </tr>";
-                }
-            } else {
-                echo "<tr><td colspan='7' class='text-center'>No products found</td></tr>";
-            }
-          ?>
-        </tbody>
-      </table>
-    </form>
-  </div>
+      if ($search_result && $db->num_rows($search_result) > 0) {
+        while ($row = $db->fetch_assoc($search_result)) {
+            echo "<tr>
+            <td>{$row['name']} ({$row['barcode']})</td>
+            <td>{$row['sale_price']}</td>
+            <td>{$row['quantity']}</td>
+            <td>
+            <input type='number' name='quantity' class='sell-qty' min='1' max='{$row['quantity']}' placeholder='Enter Qty' required>
+            </td>
+            <td>
+            <input type='text' name='total' class='total-amount' value='0' readonly>
+            </td>
+            <td>
+            <input type='date' name='date' required>
+            </td>
+            <td>
+            <input type='hidden' name='s_id' value='{$row['id']}'>
+            <input type='hidden' name='price' value='{$row['sale_price']}'>
+            <button type='submit' name='add_sale' class='btn btn-success btn-sm'>Add</button>
+            </td>
+            </tr>";
+        }
+    } else {
+        echo "<tr><td colspan='7' class='text-center'>No products found</td></tr>";
+    }
+    ?>
+</tbody>
+</table>
+</form>
+</div>
 </div>
 </div>
 </div>
 <script>
-document.addEventListener('input', function(event) {
-  if (event.target.classList.contains('sell-qty')) {
-    const row = event.target.closest('tr');
-    const price = parseFloat(row.querySelector('input[name="price"]').value);
-    const quantity = parseInt(event.target.value) || 0;
-    const totalField = row.querySelector('.total-amount');
-    totalField.value = (price * quantity).toFixed(2);
-  }
+    document.addEventListener('input', function(event) {
+      if (event.target.classList.contains('sell-qty')) {
+        const row = event.target.closest('tr');
+        const price = parseFloat(row.querySelector('input[name="price"]').value);
+        const quantity = parseInt(event.target.value) || 0;
+        const totalField = row.querySelector('.total-amount');
+        totalField.value = (price * quantity).toFixed(2);
+    }
 });
 </script>
 <?php include_once('layouts/footer.php'); ?>

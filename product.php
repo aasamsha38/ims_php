@@ -8,16 +8,16 @@ $products = join_product_table();
 $con = mysqli_connect("localhost", "root", "", "inventory_system");
 
 if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] == 0) {
-    $upload_dir = 'uploads/products/';
-    $file_name = $_FILES['product_image']['name'];
-    $file_tmp = $_FILES['product_image']['tmp_name'];
-    $file_path = $upload_dir . $file_name;
+	$upload_dir = 'uploads/products/';
+	$file_name = $_FILES['product_image']['name'];
+	$file_tmp = $_FILES['product_image']['tmp_name'];
+	$file_path = $upload_dir . $file_name;
 
-    if (move_uploaded_file($file_tmp, $file_path)) {
-        echo "File uploaded successfully!";
-    } else {
-        echo "Failed to move file.";
-    }
+	if (move_uploaded_file($file_tmp, $file_path)) {
+		echo "File uploaded successfully!";
+	} else {
+		echo "Failed to move file.";
+	}
 }
 
 // Check connection
@@ -199,7 +199,7 @@ $total_revenue = $total_revenue_row['total_revenue'] ?? 0;
 							<div id="result" class="list-group"></div>
 						</div>
 						<div class="downoad">
-							<a href=""><span class="icon-download"></span>Download</a>
+							<a href="#" id="download_btn"><span class="icon-download"></span>Download</a>
 						</div>
 					</div>
 				</form>
@@ -207,7 +207,7 @@ $total_revenue = $total_revenue_row['total_revenue'] ?? 0;
 		</div>
 		<div class="row">
 			<div class="col xs-12">
-<div class="questionaries__showcase" id="question_popup" style="display: flex;">
+				<div class="questionaries__showcase" id="question_popup" style="display: flex;">
 					<div class="tbl-wrap">
 						<table id="tracking__table">
 							<thead>
@@ -306,9 +306,45 @@ $total_revenue = $total_revenue_row['total_revenue'] ?? 0;
 								?>
 							</tbody>
 						</table>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
 
-<?php include_once('layouts/footer.php'); ?>
+		<?php include_once('layouts/footer.php'); ?>
+		<script>
+			document.getElementById('download_btn').addEventListener('click', function (event) {
+				event.preventDefault();
+
+        // Clone the table so original stays intact
+				const tableClone = document.getElementById('tracking__table').cloneNode(true);
+
+        // Iterate over rows and remove the last cell
+				Array.from(tableClone.rows).forEach(row => {
+					if (row.cells.length > 0) {
+						row.deleteCell(row.cells.length - 1);
+					}
+				});
+
+        // Get the modified table's HTML content
+				const htmlContent = tableClone.innerHTML;
+				console.log(htmlContent);
+
+				const formData = new FormData();
+				formData.append('htmlContent', htmlContent);
+				formData.append('title', "Inventory Report");
+
+				fetch('pdfDownload.php', {
+					method: 'POST',
+					body: formData
+				})
+				.then(response => response.blob())
+				.then(blob => {
+					const link = document.createElement('a');
+					link.href = window.URL.createObjectURL(blob);
+					link.download = 'document.pdf';
+					link.click();
+				})
+				.catch(error => console.error('Error:', error));
+			});
+		</script>

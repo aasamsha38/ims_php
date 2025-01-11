@@ -5,6 +5,8 @@ use Dompdf\Dompdf;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get HTML content from POST request
     $htmlContent = $_POST['htmlContent'] ?? '';
+    $title = $_POST['title'] ?? '';
+
 
     // Build the complete HTML content
     $completeHtml = "<!DOCTYPE html>
@@ -18,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <link href='https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap' rel='stylesheet'>
         <style>
             body { font-family: 'Noto Sans', sans-serif; }
-            .workbord { margin-top: 20px; padding-right: 30px; border-left: 100px; height: 100vh; margin: 0 auto; padding: 80px; }
+            .workbord { margin-top: 20px; padding-right: 30px; border-left: 100px; height: 100vh; margin: 0 auto; padding: 80px; margin:auto;}
             table { width: 100%; border-collapse: collapse; }
             table, th, td { border: 1px solid #f1f1f1; }
             th, td { padding: 8px; text-align: left; }
@@ -29,15 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <main id='site__main' class='site__main'>
                 <section class='workbord'>
                     <div class='workboard__heading'>
-                        <h1 class='workboard__title'>Inventory Management System - Selling Product Details</h1>
+                        <h1 class='workboard__title'>Inventory Management System</h1>
+                        <h3>$title</h3>
                     </div>
                     <div class='workpanel salesreport__main'>
                         <div class='row'>
-                            <div class='col xs-12 sm-6'>
-                                <div class='date'>
-                                    <span><strong>PDF of selling product page:</strong></span>
-                                </div>
-                            </div>
                             <div class='col xs-12'>
                                 <div class='questionaries__showcase' id='question_popup' style='display: flex;'>
                                     <div class='tbl-wrap'>

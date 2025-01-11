@@ -38,7 +38,7 @@ $sales = monthlySales($year);
                 <div id="result" class="list-group"></div>
               </div>
               <div class="downoad">
-                <a href=""><span class="icon-download"></span>Download</a>
+                <a href="#" id="download_btn"><span class="icon-download"></span>Download</a>
               </div>
             </div>
           </form>
@@ -79,3 +79,29 @@ $sales = monthlySales($year);
 	</div>
 </div>
 <?php include_once('layouts/footer.php'); ?>
+
+<script>
+    document.getElementById('download_btn').addEventListener('click', function (event) {
+        event.preventDefault();
+
+        // Get the modified table's HTML content
+        const htmlContent = document.getElementById('sales__table').innerHTML;
+
+        const formData = new FormData();
+        formData.append('htmlContent', htmlContent);
+        formData.append('title', "Monthlysales Report");
+
+        fetch('pdfDownload.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'document.pdf';
+            link.click();
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>

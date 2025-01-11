@@ -28,9 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
 								<input type="submit" class="button primary-tint" value="Add User" name="add_user">
 							</div>
 						</div>
-						<div class="downoad">
-							<a href="#"><span class="icon-download"></span>Download</a>
-						</div>
 					</div>
 				</form>
 			</div>
