@@ -98,5 +98,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_Suppliers'])) {
                                                     </div>
                                                 </td>
                                             </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <?php include_once('layouts/footer.php'); ?>
+
