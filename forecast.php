@@ -1,53 +1,70 @@
 <?php
 require_once('includes/load.php');
+// If no connection file, create a new connection:
+$servername = "localhost";
+$username = "root";      // Default XAMPP username
+$password = "";          // Default XAMPP password is empty
+$dbname = "inventory_system";  // Your database name
 
-// Fetch monthly sales grouped by product
-$sql = "
-    SELECT 
-        product_id, 
-        DATE_FORMAT(date, '%Y-%m') AS month, 
-        SUM(qty) AS total_sales
-    FROM sales
-    GROUP BY product_id, month
-    ORDER BY product_id, month
-";
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-$result = $db->query($sql);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+// Set the smoothing factor (alpha) for Exponential Smoothing
+$alpha = 0.5; // Can be adjusted between 0 and 1
+
+// Fetch sales data grouped by month and product
+$sql = "SELECT product_id, DATE_FORMAT(date, '%Y-%m') AS month, SUM(qty) AS total_sales 
+        FROM sales 
+        GROUP BY product_id, month 
+        ORDER BY product_id, month";
+$result = $conn->query($sql);
 
 $sales_data = [];
-while ($row = $result->fetch_assoc()) {
-    $sales_data[$row['product_id']][] = [
-        'month' => $row['month'],
-        'total_sales' => $row['total_sales']
-    ];
-}
 
-// Calculate 3-month moving average
-$forecast_data = [];
-foreach ($sales_data as $product_id => $sales) {
-    for ($i = 0; $i < count($sales); $i++) {
-        if ($i < 3) {
-            $forecast = $sales[$i]['total_sales']; // Not enough data, use actual
-        } else {
-            $forecast = ($sales[$i - 1]['total_sales'] + $sales[$i - 2]['total_sales'] + $sales[$i - 3]['total_sales']) / 3;
-        }
-
-        $actual = $sales[$i]['total_sales'];
-        $error = ($actual != 0) ? number_format((($actual - $forecast) / $actual) * 100, 2) : 0;
-
-        $forecast_data[] = [
-            'product_id' => $product_id,
-            'month' => $sales[$i]['month'],
-            'actual_sales' => $actual,
-            'forecast_sales' => round($forecast, 2),
-            'error' => $error . '%'
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $sales_data[$row['product_id']][] = [
+            'month' => $row['month'],
+            'sales' => $row['total_sales']
         ];
     }
 }
+
+// Calculate forecast using Exponential Smoothing
+$forecast_results = [];
+
+foreach ($sales_data as $product_id => $data) {
+    $previous_forecast = $data[0]['sales']; // Initialize forecast with the first actual sales
+    foreach ($data as $index => $entry) {
+        $actual_sales = $entry['sales'];
+        
+        // Apply Exponential Smoothing formula
+        $forecast = ($alpha * $actual_sales) + ((1 - $alpha) * $previous_forecast);
+        
+        // Calculate percentage error if actual sales exist
+        $percentage_error = ($actual_sales != 0) ? (($actual_sales - $previous_forecast) / $actual_sales) * 100 : 0;
+        
+        $forecast_results[] = [
+            'product_id' => $product_id,
+            'month' => $entry['month'],
+            'actual_sales' => $actual_sales,
+            'forecasted_sales' => round($forecast, 2),
+            'percentage_error' => round($percentage_error, 2)
+        ];
+
+        $previous_forecast = $forecast; // Update forecast for next iteration
+    }
+}
 ?>
-<?php include_once('layouts/header.php'); ?>
+
+<?php include_once('layouts/header.php'); ?> 
+</table>
 <div class="workboard__heading">
-	<h1 class="workboard__title">Sales</h1>
+	<h1 class="workboard__title">Sales Prediction</h1>
 </div>
 <div class="workpanel report__main">
 	<div class="row">
@@ -57,7 +74,7 @@ foreach ($sales_data as $product_id => $sales) {
 					<div class="meta-info">
 						<div class="row">
 							<div class="col xs-12 sm-6">
-								<h2 class="subheading">Selling Products</h2>
+								<h2 class="subheading"></h2>
 							</div>
 							<div class="col xs-12 sm-6">
 								<form method="POST">
@@ -82,24 +99,24 @@ foreach ($sales_data as $product_id => $sales) {
 										<table id="sales__table">
 											<thead>
                                             <tr>
-        <th>Product ID</th>
-        <th>Month</th>
-        <th>Actual Sales</th>
-        <th>Forecasted Sales</th>
-        <th>Percentage Error (%)</th>
-    </tr>
+            <th>Product ID</th>
+            <th>Month</th>
+            <th>Actual Sales</th>
+            <th>Forecasted Sales</th>
+            <th>Percentage Error (%)</th>
+        </tr>
 											</thead>
 											<tbody>
 
-                                            <?php foreach ($forecast_data as $data): ?>
-    <tr>
-        <td><?php echo $data['product_id']; ?></td>
-        <td><?php echo $data['month']; ?></td>
-        <td><?php echo $data['actual_sales']; ?></td>
-        <td><?php echo $data['forecast_sales']; ?></td>
-        <td><?php echo $data['error']; ?></td>
-    </tr>
-    <?php endforeach; ?>
+                                            <?php foreach ($forecast_results as $result): ?>
+            <tr>
+                <td><?= $result['product_id']; ?></td>
+                <td><?= $result['month']; ?></td>
+                <td><?= $result['actual_sales']; ?></td>
+                <td><?= $result['forecasted_sales']; ?></td>
+                <td><?= $result['percentage_error']; ?>%</td>
+            </tr>
+        <?php endforeach; ?>
 											</tbody>
 										</table>
 									</div>
@@ -113,3 +130,4 @@ foreach ($sales_data as $product_id => $sales) {
 	</div>
 </div>
 <?php include_once('layouts/footer.php'); ?>
+

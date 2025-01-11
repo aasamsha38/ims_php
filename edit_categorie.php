@@ -63,7 +63,7 @@ if (isset($_POST['update_cat'])) {
 										<div class="info">
 											<div class="row">
 												<div class="col xs-12 sx-6">
-                        <span>Editing <?php echo remove_junk(ucfirst($categorie['name']));?></span>
+                        <span>Editing</span>
 												</div>
 												<div class="col xs-12 sx-6">
 													<!-- <form action="get"> -->
