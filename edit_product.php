@@ -27,6 +27,7 @@ if (isset($_POST['product'])) {
 
   if (empty($errors)) {
     $p_name = remove_junk($db->escape($_POST['product-title']));
+    $p_barcode = remove_junk($db->escape($_POST['product-barcode']));
     $p_cat = (int)$_POST['product-categorie'];
     $p_qty = remove_junk($db->escape($_POST['product-quantity']));
     $p_buy = remove_junk($db->escape($_POST['buying-price']));
@@ -39,9 +40,28 @@ if (isset($_POST['product'])) {
     }
 
     $query = "UPDATE products SET";
+    $query .= " barcode ='{$p_barcode}',";
     $query .= " name ='{$p_name}', quantity ='{$p_qty}',";
     $query .= " buy_price ='{$p_buy}', sale_price ='{$p_sale}', categorie_id ='{$p_cat}', media_id='{$media_id}'";
     $query .= " WHERE id ='{$product['id']}'";
+
+  // if (empty($errors)) {
+  //   $p_name = remove_junk($db->escape($_POST['product-title']));
+  //   $p_cat = (int)$_POST['product-categorie'];
+  //   $p_qty = remove_junk($db->escape($_POST['product-quantity']));
+  //   $p_buy = remove_junk($db->escape($_POST['buying-price']));
+  //   $p_sale = remove_junk($db->escape($_POST['saleing-price']));
+
+  //   if (is_null($_POST['product-photo']) || $_POST['product-photo'] === "") {
+  //     $media_id = '0';
+  //   } else {
+  //     $media_id = remove_junk($db->escape($_POST['product-photo']));
+  //   }
+
+  //   $query = "UPDATE products SET";
+  //   $query .= " name ='{$p_name}', quantity ='{$p_qty}',";
+  //   $query .= " buy_price ='{$p_buy}', sale_price ='{$p_sale}', categorie_id ='{$p_cat}', media_id='{$media_id}'";
+  //   $query .= " WHERE id ='{$product['id']}'";
 
     $result = $db->query($query);
     if ($result && $db->affected_rows() === 1) {
@@ -102,7 +122,7 @@ if (isset($_POST['product'])) {
              <div   class = "form__module">
               <label for   = "brcode" class = "form__label">Barcode</label>
               <div   class = "form__set">
-                <input type  = "text" id= "brcode" placeholder = "12345">
+                <input type  = "text" id= "brcode"  name="product-barcode" placeholder = "12345" value="<?php echo remove_junk($product['barcode']);?>" >
               </div>
             </div>
           </div>

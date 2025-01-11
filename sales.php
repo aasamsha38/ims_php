@@ -95,3 +95,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_sale'])) {
 	</div>
 </div>
 <?php include_once('layouts/footer.php'); ?>
+
+<script>
+    document.getElementById('download_btn').addEventListener('click', function (event) {
+        event.preventDefault();
+        const htmlContent = document.getElementById('sales__table').innerHTML;
+		console.log(htmlContent);
+
+        const formData = new FormData();
+        formData.append('htmlContent', htmlContent);
+
+        fetch('pdfDownload.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'document.pdf';
+            link.click();
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>

@@ -35,9 +35,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
 $search_query = '';
 if (isset($_POST["submit"])) {
 	$search_query = mysqli_real_escape_string($con, $_POST["title"]);
-	$sql = "SELECT products.id, products.media_id, products.name, products.date, products.quantity, products.buy_price, products.sale_price, categories.name AS categorie
+	$sql = "SELECT media.file_name as image,products.id, products.barcode ,products.media_id, products.name, products.date, products.quantity, products.buy_price, products.sale_price, categories.name AS categorie
 	FROM products
 	LEFT JOIN categories ON products.categorie_id = categories.id
+	LEFT JOIN media ON products.media_id = media.id
 	WHERE products.id = '$search_query' 
 	OR products.name LIKE '%$search_query%' 
 	OR categories.name LIKE '%$search_query%'";
@@ -231,6 +232,7 @@ $total_revenue = $total_revenue_row['total_revenue'] ?? 0;
 										$formatted_date = read_date($row['date']);
 										echo "<tr>
 										<td>{$row['id']}</td>
+										<td>{$row['barcode']}</td>
 										<td>";
             // Display image based on media_id
 										if ($row['media_id'] == '0' || empty($row['media_id'])) {
@@ -238,7 +240,7 @@ $total_revenue = $total_revenue_row['total_revenue'] ?? 0;
 											echo "<img class='img-avatar img-circle profile-photo' src='uploads/products/no_image.png' alt='No image available'>";
 										} else {
         // Check if the file exists at the given path
-											$image_path = 'uploads/products/' . $row['media_id'];
+											$image_path = 'uploads/products/' . $row['image'];
 
         // Check if file exists and is accessible
 											if (file_exists($image_path)) {
@@ -273,12 +275,13 @@ $total_revenue = $total_revenue_row['total_revenue'] ?? 0;
 										$formatted_date = read_date($product['date']);
 										echo "<tr>
 										<td>" . remove_junk($product['id']) . "</td>
+										<td>" . remove_junk($product['barcode']) . "</td>
 										<td>";
             // Display image based on media_id
 										if ($product['media_id'] == '0' || empty($product['media_id'])) {
 											echo "<img class='img-avatar img-circle profile-photo' src='uploads/products/no_image.png' alt='No image available'>";
 										} else {
-											echo "<img class='img-avatar img-circle profile-photo' src='uploads/products/{$product['media_id']}' alt='{$product['name']}'>";
+											echo "<img class='img-avatar img-circle profile-photo' src='uploads/products/{$product['image']}' alt='{$product['name']}'>";
 										}
 										echo "</td>
 										<td>" . remove_junk($product['name']) . "</td>
