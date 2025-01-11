@@ -1,6 +1,6 @@
 <?php
 require_once('includes/load.php');
-// If no connection file, create a new connection:
+
 $servername = "localhost";
 $username = "root";      // Default XAMPP username
 $password = "";          // Default XAMPP password is empty
