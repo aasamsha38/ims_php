@@ -323,6 +323,7 @@ $total_revenue = $total_revenue_row['total_revenue'] ?? 0;
 				Array.from(tableClone.rows).forEach(row => {
 					if (row.cells.length > 0) {
 						row.deleteCell(row.cells.length - 1);
+						row.deleteCell(row.cells.length - 7);
 					}
 				});
 

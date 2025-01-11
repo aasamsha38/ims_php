@@ -20,7 +20,7 @@
 				</div>
 				<div class="kdrop sub-menu">
 					<ul>
-						<li><a href="manage_branch.php">Manage Branch</a></li>
+						<li><a href="manage_suppliers.php">Manage Suppliers</a></li>
 						<li><a href="users.php">Manage Users</a></li>
 						<li><a href="group.php">Manage Groups</a></li>
 					</ul>
@@ -50,30 +50,30 @@
 					</a>
 				</div>
 			</li>
-						<li>
-							<div class="knav">
-								<a href="media.php">
-									<span class="icon-filter_list"></span>
-									<span class="txt">Media</span>
-								</a>
-							</div>
-						</li>
-						<li class="has-drop">
-							<div class="knav sub-btn">
-								<a href="#">
-									<span class="icon-inventory"></span>
-									<span class="txt">Sale Report</span>
-								</a>
-								<button type="button"><span class="icon-keyboard_arrow_right dropdown"></span></button>
-							</div>
-							<div class="kdrop sub-menu">
-								<ul>
-									<li><a href="sales_report.php">Date Range</a></li>
-									<li><a href="daily_sales.php">Daily</a></li>
-									<li><a href="monthly_sales.php">Monthly</a></li>
-								</ul>
-							</div>
-						</li>
+			<li>
+				<div class="knav">
+					<a href="media.php">
+						<span class="icon-filter_list"></span>
+						<span class="txt">Media</span>
+					</a>
+				</div>
+			</li>
+			<li class="has-drop">
+				<div class="knav sub-btn">
+					<a href="#">
+						<span class="icon-inventory"></span>
+						<span class="txt">Sale Report</span>
+					</a>
+					<button type="button"><span class="icon-keyboard_arrow_right dropdown"></span></button>
+				</div>
+				<div class="kdrop sub-menu">
+					<ul>
+						<li><a href="sales_report.php">Date Range</a></li>
+						<li><a href="daily_sales.php">Daily</a></li>
+						<li><a href="monthly_sales.php">Monthly</a></li>
 					</ul>
-				</nav>
-			</aside>
+				</div>
+			</li>
+		</ul>
+	</nav>
+</aside>

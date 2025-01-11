@@ -1,5 +1,23 @@
-      <?php $user = current_user(); 
-      // $notifications = get_user_notifications($user['id']);?>
+<?php $user = current_user(); 
+      // $notifications = get_user_notifications($user['id']);
+
+require_once('includes/load.php');
+      
+$query = "
+SELECT 
+    products.name, 
+    products.quantity, 
+    categories.threshold 
+FROM products 
+INNER JOIN categories 
+    ON products.categorie_id = categories.id 
+WHERE products.quantity <= categories.threshold
+";
+
+$result = $db->query($query);
+
+$notification_count = $result->num_rows;      
+?>
       <!DOCTYPE html>
       <html lang="en">
 
@@ -100,13 +118,16 @@
           <div class="notification_dropdown">
            <div onclick="toggle()" class="notification_dropdown-btn">
             <i class="icon-notification"></i>
-            <span class="notification-count">5</span>
+            <span class="notification-count" id = "notification_count"><?php echo $notification_count; ?></span>
           </div>
-
-          <ul class="notification_dropdown-list">
-            <li class="notification_item">New message from Admin</li>
-            <li class="notification_item">Your profile was updated</li>
-            <li class="notification_item">System maintenance scheduled</li>
+          
+          <ul class="notification_dropdown-list" id = "notification_dropdown">
+          <?php
+          // Assuming $result is the result of your query
+          while ($row = mysqli_fetch_assoc($result)) {
+              echo "<li class = 'notification_item'>" . $row['name'] . " is below the threshold. Current Quantity: " . $row['quantity'] . "</li>";
+          }
+          ?>
           </ul>
         </div>
         <div class="profile-dropdown">
