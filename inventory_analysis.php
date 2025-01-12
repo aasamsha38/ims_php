@@ -1,7 +1,7 @@
 <?php
   require_once('includes/load.php');
   // Checkin What level user has permission to view this page
-  page_require_level(3);
+  page_require_level(2);
 
 
 
@@ -9,20 +9,43 @@
 if (!isset($dbh)) {
     die("Database connection not initialized.");
 }
-
 ?>
-<?php include_once('layouts/header.php'); ?>
-    <div class="ts-main-content">
-
-        <div class="content-wrapper">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h2 class="page-title">Inventory Analysis</h2>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">EOQ Analysis</div>
-                            <div class="panel-body">
-                                <?php 
+<?php include_once('layouts/header.php'); ?> 
+</table>
+<div class="workboard__heading">
+	<h1 class="workboard__title">Inventory Analysis</h1>
+</div>
+<div class="workpanel report__main">
+	<div class="row">
+		<div class="col xs-12">
+			<div class="row">
+				<div class="col xs-12">
+					<div class="meta-info">
+						<div class="row">
+							<div class="col xs-12 sm-6">
+								<h2 class="subheading">EOQ Analysis</h2>
+							</div>
+							<div class="col xs-12 sm-6">
+								<form method="POST">
+									<div class="site-panel">
+										<div class="form__module">
+											<div class="form__action">
+												<span class="icon-add"></span>
+												<input type="submit" class="button primary-tint" value="Add sales" name="add_sale">
+											</div>
+										</div>
+										<div class="downoad">
+											<a href="" id="download_btn"><span class="icon-download"></span>Download</a>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col xs-12">
+								<div class="questionaries__showcase" id="question_popup" style="display: flex;">
+									<div class="tbl-wrap">
+                                    <?php 
                                 $sql = "SELECT p.*, 
                                         ia.eoq,
                                         ia.safety_stock,
@@ -39,10 +62,10 @@ if (!isset($dbh)) {
                                 $query->execute();
                                 $results = $query->fetchAll(PDO::FETCH_OBJ);
                                 ?>
-                                <table id="zctb" class="display table table-striped table-bordered table-hover" cellspacing="0" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
+										<table id="sales__table">
+											<thead>
+                                            <tr>
+                                            <th>S.N</th>
                                             <th>Product</th>
                                             <th>Current Stock</th>
                                             <th>EOQ</th>
@@ -52,9 +75,9 @@ if (!isset($dbh)) {
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php 
+											</thead>
+											<tbody>
+                                            <?php 
                                         $cnt=1;
                                         if($query->rowCount() > 0) {
                                             foreach($results as $result) {
@@ -109,25 +132,18 @@ if (!isset($dbh)) {
                                             </td>
                                         </tr>
                                         <?php $cnt=$cnt+1; }} ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Loading Scripts -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap-select.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.dataTables.min.js"></script>
-    <script src="js/dataTables.bootstrap.min.js"></script>
-    <script src="js/Chart.min.js"></script>
-    <script src="js/fileinput.js"></script>
-    <script src="js/chartData.js"></script>
-    <script src="js/main.js"></script>
-</body>
-</html>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<?php include_once('layouts/footer.php'); ?>
+

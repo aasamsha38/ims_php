@@ -82,6 +82,14 @@
 					</ul>
 				</div>
 			</li>
+			<li>
+				<div class="knav">
+					<a href="inventory_analysis.php">
+						<span class="fa fa-calculator"></span>
+						<span class="txt">Inventory Analysis</span>
+					</a>
+				</div>
+			</li>
 		</ul>
 	</nav>
 </aside>
