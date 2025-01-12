@@ -100,6 +100,15 @@ page_require_level(3);
           </div>
         </div>
       </div>
+      <div class="col xs-12 ">
+      <form  method = "POST">
+              <div   class  = "site-panel">
+                <div   class  = "form__action">
+                  <input type   = "submit" class = "button primary-tint" value = "Pay" name = "pay">
+                </div>
+              </div>
+            </form>
+      </div>
     </div>
   </div>
 </div>
