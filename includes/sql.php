@@ -253,15 +253,16 @@ function find_all_product_info_by_title($title)
 /*--------------------------------------------------------------*/
 /* Function for Update product quantity
   /*--------------------------------------------------------------*/
-function update_product_qty($qty, $p_id)
-{
+// Function to update product quantity based on the sale edit
+function update_product_qty($qty_difference, $operation, $product_id) {
   global $db;
-  $qty = (int) $qty;
-  $id  = (int)$p_id;
-  $sql = "UPDATE products SET quantity=quantity -'{$qty}' WHERE id = '{$id}'";
-  $result = $db->query($sql);
-  return ($db->affected_rows() === 1 ? true : false);
+
+  // Adjust the product quantity based on the difference
+  $sql = "UPDATE products SET quantity = quantity - ({$qty_difference}) WHERE id = '{$product_id}'";
+  return $db->query($sql);
 }
+
+
 /*--------------------------------------------------------------*/
 /* Function for Display Recent product Added
   /*--------------------------------------------------------------*/

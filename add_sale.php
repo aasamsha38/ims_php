@@ -1,32 +1,33 @@
 <?php
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
-
 $page_title = 'Add Sale';
 require_once('includes/load.php');
-// Check what level user has permission to view this page
 page_require_level(3);
 
+// Initialize variables
+$search_result = null;
+$search_query = '';
+
 if (isset($_POST['add_sale'])) {
-    $req_fields = array('s_id', 'quantity', 'price', 'total', 'date');
+    $req_fields = array('quantity', 'price', 'total', 'date', 'product_id');
     validate_fields($req_fields);
+
     if (empty($errors)) {
-        $p_id = $db->escape((int)$_POST['s_id']);
-        $s_qty = $db->escape((int)$_POST['quantity']);
-        $s_price = $db->escape($_POST['price']);
-        $s_total = $db->escape($_POST['total']);
-        $s_date = $db->escape($_POST['date']);
+        $product_id = $db->escape((int)$_POST['product_id']);
+        $quantity = $db->escape((int)$_POST['quantity']);
+        $total = $db->escape($_POST['total']);
+        $date = $db->escape($_POST['date']);
+        $sale_date = date("Y-m-d", strtotime($date));
 
         $sql = "INSERT INTO sales (product_id, qty, price, total, date) VALUES 
-        ('{$p_id}', '{$s_qty}', '{$s_price}', '{$s_total}', '{$s_date}')";
+                ('{$product_id}', '{$quantity}', '{$total}', '{$total}', '{$sale_date}')";
+        $result = $db->query($sql);
 
-        if ($db->query($sql)) {
-            update_product_qty($s_qty, $p_id);
+        if ($result && $db->affected_rows() === 1) {
+            update_product_qty($quantity, 0, $product_id); 
             $session->msg('s', "Sale added successfully.");
             redirect('add_sale.php', false);
         } else {
-            $session->msg('d', 'Failed to add sale!');
+            $session->msg('d', 'Failed to add sale.');
             redirect('add_sale.php', false);
         }
     } else {
@@ -35,9 +36,7 @@ if (isset($_POST['add_sale'])) {
     }
 }
 
-// Handle the search query
-$search_query = '';
-$search_result = null;
+// Handle product search
 if (isset($_POST["submit"])) {
     $search_query = $db->escape($_POST["title"]);
     $sql = "SELECT 
@@ -55,6 +54,7 @@ if (isset($_POST["submit"])) {
     p.barcode LIKE '%{$search_query}%'";
     $search_result = $db->query($sql);
 }
+
 ?>
 <?php include_once('layouts/header.php'); ?> 
 <div class="row">
@@ -123,7 +123,7 @@ if (isset($_POST["submit"])) {
             <input type='date' name='date' required>
             </td>
             <td>
-            <input type='hidden' name='s_id' value='{$row['id']}'>
+            <input type='hidden' name='product_id' value='{$row['id']}'>
             <input type='hidden' name='price' value='{$row['sale_price']}'>
             <button type='submit' name='add_sale' class='btn btn-success btn-sm'>Add</button>
             </td>
@@ -136,6 +136,7 @@ if (isset($_POST["submit"])) {
 </tbody>
 </table>
 </form>
+</div>
 </div>
 </div>
 </div>
