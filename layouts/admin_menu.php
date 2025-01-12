@@ -43,6 +43,14 @@
 				</div>
 			</li>
 			<li>
+				<div class="knav sub-btn">
+					<a href="orders.php">
+						<span class="icon-order"></span>
+						<span class="txt">Orders</span>
+					</a>
+				</div>
+			</li>
+			<li>
 				<div class="knav">
 					<a href="sales.php">
 						<span class="icon-receipt"></span>

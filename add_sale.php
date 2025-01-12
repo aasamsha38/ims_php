@@ -35,6 +35,36 @@ if (isset($_POST['add_sale'])) {
         redirect('add_sale.php', false);
     }
 }
+if (isset($_POST['delete_sale'])) {
+  $s_id = $db->escape((int)$_POST['s_id']);
+
+  // Fetch the sale details
+  $sql = "SELECT * FROM sales WHERE product_id = '{$s_id}'";
+  $result = $db->query($sql);
+
+  if ($db->num_rows($result) > 0) {
+      $sale = $db->fetch_assoc($result);
+      $qty_sold = $sale['qty'];
+
+      // Delete the sale
+      $delete_sql = "DELETE FROM sales WHERE product_id = '{$s_id}'";
+      if ($db->query($delete_sql)) {
+          // Restore the quantity in the products table
+          $update_stock = "UPDATE products SET quantity = quantity + {$qty_sold} WHERE id = '{$s_id}'";
+          $db->query($update_stock);
+
+          $session->msg('s', "Sale deleted, and stock restored successfully.");
+          redirect('add_sale.php', false);
+      } else {
+          $session->msg('d', 'Failed to delete sale!');
+          redirect('add_sale.php', false);
+      }
+  } else {
+      $session->msg('d', 'Sale not found!');
+      redirect('add_sale.php', false);
+  }
+}
+
 
 // Handle product search
 if (isset($_POST["submit"])) {
@@ -126,6 +156,7 @@ if (isset($_POST["submit"])) {
             <input type='hidden' name='product_id' value='{$row['id']}'>
             <input type='hidden' name='price' value='{$row['sale_price']}'>
             <button type='submit' name='add_sale' class='btn btn-success btn-sm'>Add</button>
+            <button type='submit' name='delete_sale' class='btn btn-danger btn-sm'>Delete</button>
             </td>
             </tr>";
         }

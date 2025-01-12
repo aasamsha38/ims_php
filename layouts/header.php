@@ -79,7 +79,7 @@ $notification_count = $result->num_rows;
   top: 40px; /* Adjust to align dropdown */
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 200px;
+  width: 300px;
   padding: 0;
   z-index: 1000;
   border-radius: 10px;
