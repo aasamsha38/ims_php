@@ -1,160 +1,85 @@
 <?php
-$page_title = 'All Product';
+// billing.php
+$page_title = 'Billing';
 require_once('includes/load.php');
-page_require_level(2);
-$products = join_product_table();
-
-  // Establish database connection
-$con = mysqli_connect("localhost", "root", "", "inventory_system");
-
-if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] == 0) {
-  $upload_dir = 'uploads/products/';
-  $file_name  = $_FILES['product_image']['name'];
-  $file_tmp   = $_FILES['product_image']['tmp_name'];
-  $file_path  = $upload_dir . $file_name;
-
-  if (move_uploaded_file($file_tmp, $file_path)) {
-    echo "File uploaded successfully!";
-  } else {
-    echo "Failed to move file.";
-  }
-}
-
-  // Check connection
-if (!$con) {
-	die("Connection failed: " . mysqli_connect_error());
-}
-
-  // Navigation to add_product.php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_product'])) {
-	header("Location: add_product.php");
-	exit;
-}
-
-  // Handle the search query
-$search_query = '';
-if (isset($_POST["submit"])) {
-	$search_query = mysqli_real_escape_string($con, $_POST["title"]);
-	$sql          = "SELECT products.id, products.media_id, products.name, products.date, products.quantity, products.buy_price, products.sale_price, categories.name AS categorie
-	FROM products
-	LEFT  JOIN categories ON products.categorie_id = categories.id
-	WHERE products.id                              = '$search_query'
-	OR products.name LIKE '%$search_query%' 
-	OR categories.name LIKE '%$search_query%'";
-	$search_result = mysqli_query($con, $sql);
-} else {
-	$search_result = null;
-}
-
-$last_category_update  = get_last_categories_update_time();
-$last_product_update   = get_last_product_update_time();
-$c_categorie           = count_by_id('categories');
-$total_products_query  = "SELECT COUNT(*) AS total_products FROM products";
-$total_products_result = mysqli_query($con, $total_products_query);
-$total_products_row    = mysqli_fetch_assoc($total_products_result);
-$total_products        = $total_products_row['total_products'];
-
-  // Calculate total revenue
-$total_revenue_query  = "SELECT SUM(sale_price * quantity) AS total_revenue FROM products";
-$total_revenue_result = mysqli_query($con, $total_revenue_query);
-$total_revenue_row    = mysqli_fetch_assoc($total_revenue_result);
-$total_revenue        = $total_revenue_row['total_revenue'] ?? 0;
+page_require_level(3);
 ?>
-
 <?php include_once('layouts/header.php'); ?>
-<!-- <?php echo display_msg($msg); ?> -->
-<div class = "workboard__heading">
-  <h1  class = "workboard__title">Billing</h1>
+
+<div class="workboard__heading">
+  <h1 class="workboard__title">Billing</h1>
 </div>
-<div  class = "workpanel sales ">
-  <div class = "row">
-    <div class = "col xs-12 sx-6">
-      <div class = "overall-info">
-        <div class = "info">
-          <div class = "row">
-            <div class = "col xs-12 sx-6">
-             <span>Add Product</span>
-           </div>
-           <div   class  = "col xs-12 sx-6">
-            <form  method = "POST">
-              <div   class  = "site-panel">
-                <div   class  = "form__action">
-                  <span  class  = "icon-add"></span>
-                  <input type   = "submit" class = "button primary-tint" value = "Add Products" name = "add_product">
+<div class="workpanel sales">
+  <div class="row">
+    <div class="col xs-12 sx-6">
+      <div class="overall-info">
+        <div class="info">
+          <div class="row">
+            <div class="col xs-12 sx-6">
+              <span>Add Product</span>
+            </div>
+            <div class="col xs-12 sx-6">
+              <form id="addProductForm" method="POST">
+                <div class="site-panel">
+                  <div class="form__action">
+                    <span class="icon-add"></span>
+                    <input type="submit" class="button primary-tint" value="Add Products">
+                  </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col xs-12 sx-6">
-        <form  class = "general--form access__form info" method = "post" action= "auth.php">
-          <div   class = "form__module">
-            <label for   = "brcode" class = "form__label">Barcode</label>
-            <div   class = "form__set">
-              <input type  = "text" id= "brcode" placeholder = "12345">
-            </div>
-          </div>
-          <div    class = "form__module">
-            <label  for   = "prodname" class    = "form__label">Name</label>
-            <select class = "form-control" name = "product-categorie">
-              <option value = "">Select Product</option>
-              <?php foreach ($all_categories as $cat): ?>
-                <option value = "<?php echo (int)$cat['id'] ?>">
-                  <?php echo $cat['name'] ?></option>
-                <?php endforeach; ?>
-              </select>
-            </div>
-            <div   class = "form__module">
-              <div   class = "form__set">
-                <label for   = "brcode" class = "form__label">MRP</label>
-                <input type  = "text" id = "brcode" placeholder = "Rs.">
+        <div class="col xs-12 sx-6">
+          <form class="general--form access__form info">
+            <div class="form__module">
+              <label for="productBarcode" class="form__label">Barcode</label>
+              <div class="form__set">
+                <input type="text" id="productBarcode" name="barcode" placeholder="12345" onkeyup="fetchProductDetails()">
               </div>
             </div>
-            <div   class = "form__module">
-              <div   class = "form__set">
-                <label for   = "qty" class = "form__label">Quantity</label>
-                <input type  = "text" id = "qty" placeholder = "Qty.">
-              </div>
+            <div class="form__module">
+              <label for="productName" class="form__label">Name</label>
+              <input type="text" id="productName" name="name" placeholder="Name" readonly>
             </div>
-            <div   class = "form__module">
-              <div   class = "form__set">
-                <label for   = "avi_qty" class = "form__label">Available Quantity</label>
-                <input type  = "text" id = "avi_qty" placeholder = "Qty.">
-              </div>
+            <div class="form__module">
+              <label for="qty" class="form__label">Quantity</label>
+              <input type="number" id="qty" name="qty" value="1" min="1">
             </div>
-            <div   class = "form__module">
-              <div   class = "form__set">
-                <label for   = "s_price" class = "form__label">Sale Price</label>
-                <input type  = "text" id = "s_price" placeholder = "Rs.">
-              </div>
+            <div class="form__module">
+              <label for="productStatus" class="form__label">Available</label>
+              <input type="text" id="productStatus" name="status" readonly>
+            </div>
+            <div class="form__module">
+              <label for="s_price" class="form__label">Sale Price</label>
+              <input type="text" id="s_price" name="sale_price" readonly>
             </div>
           </form>
         </div>
       </div>
     </div>
-    <div class = "col xs-12 sx-6">
-      <div class = "overall-info">
-        <div class = "info">
-          <div class = "row">
-            <div class = "col xs-12 sx-6">
-             <span>Add Product</span>
-           </div>
-           <div   class  = "col xs-12 sx-6">
-            <form  method = "POST">
-              <div   class  = "site-panel">
-                <div   class  = "form__action">
-                  <input type   = "submit" class = "button primary-tint" value = "Print" name = "print">
+
+    <div class="col xs-12 sx-6">
+      <div class="overall-info">
+        <div class="info">
+          <div class="row">
+            <div class="col xs-12 sx-6">
+              <span>Receipt</span>
+            </div>
+            <div class="col xs-12 sx-6">
+              <form id="completeSaleForm" method="POST">
+                <div class="site-panel">
+                  <div class="form__action">
+                    <input type="submit" class="button primary-tint" value="Complete Sale">
+                  </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col xs-12 ">
-        <div class="questionaries__showcase" id="question_popup" style="display: flex;">
+        <div class="col xs-12">
           <div class="tbl-wrap">
-            <table id="table">
+            <table id="receiptTable">
               <thead>
                 <tr>
                   <th>Name</th>
@@ -164,41 +89,87 @@ $total_revenue        = $total_revenue_row['total_revenue'] ?? 0;
                 </tr>
               </thead>
               <tbody>
-                <tr style="text-align: center;">
-                  <td>Name</td>
-                  <td>Quantity</td>
-                  <td>Price</td>
-                  <td class='text-center'>
-                    <div class='btn-group'>
-                      <a href='delete_product.php?id=" . (int)$product['id'] . "' class='btn btn-danger btn-xs' title='Delete' data-toggle='tooltip'>
-                        <span class='icon-trash'></span>
-                      </a>
-                    </div>
-                  </td>
-                </tr>
+                <!-- Dynamic Rows -->
               </tbody>
             </table>
           </div>
         </div>
-      </div>
-      <div class="col xs-12 sx-6 sm-3">
-        <form  class = "general--form access__form info" method = "post" action= "auth.php">
-          <div    class = "form__module">
-            <select class = "form-control" name = "product-categorie">
-              <option value = "">Cash</option>
-              <option value = "">Online</option>
-            </select>
+        <div class="col xs-12 sx-6 sm-3">
+          <div class="ttl_pric">
+            <span>Total:</span><span id="totalPrice">Rs.0</span>
           </div>
-        </form>
-      </div>
-      <div class="col xs-12 sx-6 sm-3">
-        <div class="ttl_pric">
-          <span>Total</span><span>Rs.1000</span>
         </div>
       </div>
     </div>
   </div>
 </div>
-</div>
+
+<script>
+// Fetch product details from the server using barcode
+function fetchProductDetails() {
+  let barcode = document.getElementById('productBarcode').value;
+  if (barcode.length > 0) {
+    fetch('fetch_details.php?barcode=' + barcode)
+      .then(response => response.json())
+      .then(data => {
+        if (data) {
+          document.getElementById('productName').value = data.name;
+          document.getElementById('productStatus').value = data.status;
+          document.getElementById('s_price').value = data.sale_price; // Updated to sale_price
+        }
+      });
+  }
+}
+
+// Handle Add Product to the Receipt
+document.getElementById('addProductForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  let name = document.getElementById('productName').value;
+  let qty = document.getElementById('qty').value;
+  let price = document.getElementById('s_price').value;
+  let total = qty * price;
+
+  // Check if price and quantity are valid numbers
+  if (isNaN(total) || total <= 0) {
+    alert("Invalid price or quantity");
+    return;
+  }
+
+  let table = document.getElementById('receiptTable').getElementsByTagName('tbody')[0];
+  let newRow = table.insertRow();
+  newRow.innerHTML = `<td>${name}</td><td>${qty}</td><td>${price}</td><td><button onclick="this.parentElement.parentElement.remove(); updateTotal();">Remove</button></td>`;
+  updateTotal();
+});
+
+// Update the Total Price in the Receipt
+function updateTotal() {
+  let table = document.getElementById('receiptTable');
+  let total = 0;
+
+  for (let i = 0; i < table.rows.length; i++) {
+    let qty = parseInt(table.rows[i].cells[1].innerText) || 0;
+    let price = parseFloat(table.rows[i].cells[2].innerText) || 0;
+    
+    if (qty > 0 && price > 0) {
+      total += qty * price;
+    }
+  }
+
+  // Display the updated total price
+  document.getElementById('totalPrice').innerText = 'Rs.' + total.toFixed(2);
+}
+
+// Complete Sale Form submission
+document.getElementById('completeSaleForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  fetch('complete_sale.php', {
+    method: 'POST',
+    body: new FormData(this)
+  }).then(response => response.text()).then(data => {
+    alert('Sale Completed!');
+    location.reload();
+  });
+});
+</script>
 
 <?php include_once('layouts/footer.php'); ?>
