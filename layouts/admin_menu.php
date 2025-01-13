@@ -13,16 +13,15 @@
 			<li class="has-drop">
 				<div class="knav sub-btn">
 					<a href="#">
-						<span class="icon-setting"></span>
-						<span class="txt">Management</span>
+						<span class="icon-inventory"></span>
+						<span class="txt">Analysis</span>
 					</a>
 					<button type="button"><span class="icon-keyboard_arrow_right dropdown"></span></button>
 				</div>
 				<div class="kdrop sub-menu">
 					<ul>
-						<li><a href="manage_suppliers.php">Manage Suppliers</a></li>
-						<li><a href="users.php">Manage Users</a></li>
-						<li><a href="group.php">Manage Groups</a></li>
+						<li><a href="inventory_analysis.php">EOQ Analysis</a></li>
+						<li><a href="forecast.php">Sales Prediction</a></li>
 					</ul>
 				</div>
 			</li>
@@ -82,12 +81,20 @@
 					</ul>
 				</div>
 			</li>
-			<li>
-				<div class="knav">
-					<a href="inventory_analysis.php">
-						<span class="fa fa-calculator"></span>
-						<span class="txt">Inventory Analysis</span>
+			<li class="has-drop">
+				<div class="knav sub-btn">
+					<a href="#">
+						<span class="icon-setting"></span>
+						<span class="txt">Management</span>
 					</a>
+					<button type="button"><span class="icon-keyboard_arrow_right dropdown"></span></button>
+				</div>
+				<div class="kdrop sub-menu">
+					<ul>
+						<li><a href="manage_suppliers.php">Manage Suppliers</a></li>
+						<li><a href="users.php">Manage Users</a></li>
+						<li><a href="group.php">Manage Groups</a></li>
+					</ul>
 				</div>
 			</li>
 		</ul>

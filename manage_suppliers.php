@@ -17,7 +17,17 @@ if (isset($_GET['delete_id'])) {
 
 // Fetch supplier data from the database
 $suppliers = [];
-$sql = "SELECT id, name, email, contact, product, joined_date FROM suppliers";
+$sql = "SELECT 
+            suppliers.id, 
+            suppliers.name, 
+            suppliers.email, 
+            suppliers.contact, 
+            suppliers.product_id, 
+            products.name AS product_name, 
+            suppliers.joined_date 
+        FROM suppliers 
+        JOIN products ON products.id = suppliers.product_id 
+        ORDER BY suppliers.joined_date DESC";
 $result = $db->query($sql);
 if ($result) {
     while ($row = $result->fetch_assoc()) {
@@ -55,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_Suppliers'])) {
                                 <div class="form__module">
                                     <div class="form__action">
                                         <span class="icon-add"></span>
-                                        <input type="submit" class="button primary-tint" value="Suppliers" name="add_Suppliers">
+                                        <input type="submit" class="button primary-tint" value="Add Supplier" name="add_Suppliers">
                                     </div>
                                 </div>
                             </div>
@@ -85,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_Suppliers'])) {
                                                 <td> <?php echo htmlspecialchars($supplier['name']); ?> </td>
                                                 <td class="text-center"> <?php echo htmlspecialchars($supplier['email']); ?> </td>
                                                 <td class="text-center"> <?php echo htmlspecialchars($supplier['contact']); ?> </td>
-                                                <td class="text-center"> <?php echo htmlspecialchars($supplier['product']); ?> </td>
+                                                <td class="text-center"> <?php echo htmlspecialchars($supplier['product_name']); ?> </td> <!-- Use product_name -->
                                                 <td class="text-center"> <?php echo htmlspecialchars($supplier['joined_date']); ?> </td>
                                                 <td class="text-center">
                                                     <div class="btn-group">
@@ -98,10 +108,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_Suppliers'])) {
                                                     </div>
                                                 </td>
                                             </tr>
-                                            <?php endforeach; ?>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -110,6 +119,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_Suppliers'])) {
             </div>
         </div>
     </div>
-    </div>
-    <?php include_once('layouts/footer.php'); ?>
+</div>
 
+<?php include_once('layouts/footer.php'); ?>

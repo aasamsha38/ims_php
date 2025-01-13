@@ -18,19 +18,22 @@ if (isset($_GET['id'])) {
     redirect('manage_suppliers.php');
 }
 
+// Fetch products for dropdown
+$products = find_all('products');
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update_supplier'])) {
         $name = remove_junk($db->escape($_POST['name']));
         $email = remove_junk($db->escape($_POST['email']));
         $contact = remove_junk($db->escape($_POST['contact']));
-        $product = remove_junk($db->escape($_POST['product']));
+        $product_id = (int)$_POST['product_id']; // Fetch product_id from dropdown
         $date = remove_junk($db->escape($_POST['date']));
 
-        if (empty($name) || empty($email) || empty($contact) || empty($product) || empty($date)) {
+        if (empty($name) || empty($email) || empty($contact) || empty($product_id) || empty($date)) {
             $session->msg("d", "Please fill in all fields.");
         } else {
             $query = "UPDATE suppliers SET ";
-            $query .= "name='{$name}', email='{$email}', contact='{$contact}', product='{$product}', joined_date='{$date}' ";
+            $query .= "name='{$name}', email='{$email}', contact='{$contact}', product_id='{$product_id}', joined_date='{$date}' ";
             $query .= "WHERE id='{$supplier_id}'";
 
             if ($db->query($query)) {
@@ -44,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         redirect('manage_suppliers.php', false);
     }
 }
-
 ?>
 
 <?php include_once('layouts/header.php'); ?>
@@ -119,11 +121,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
           <div class="col xs-12 sm-3">
             <div class="form__module">
-              <label for="product" class="form__label">Product</label>
+              <label for="product_id" class="form__label">Product</label>
               <div class="form__set">
-                <input
-                type="text"
-                name="product" value="<?php echo remove_junk($supplier['product']); ?>">
+                <select name="product_id" class="form-control">
+                  <option value="">Select Product</option>
+                  <?php foreach ($products as $product): ?>
+                    <option value="<?php echo $product['id']; ?>" <?php if ($supplier['product_id'] == $product['id']) echo "selected"; ?>>
+                      <?php echo $product['name']; ?>
+                    </option>
+                  <?php endforeach; ?>
+                </select>
               </div>
             </div>
           </div>

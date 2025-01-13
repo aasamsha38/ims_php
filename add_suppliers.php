@@ -3,19 +3,20 @@ $page_title = 'Add Suppliers';
 require_once('includes/load.php');
 // Check what level user has permission to view this page
 page_require_level(3);
+$all_products = find_all('products');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['save_supplier'])) {
         $name = remove_junk($db->escape($_POST['name']));
         $email = remove_junk($db->escape($_POST['email']));
         $contact = remove_junk($db->escape($_POST['contact']));
-        $product = remove_junk($db->escape($_POST['product']));
+        $product = remove_junk($db->escape($_POST['product'])); // Update field name here
         $date = remove_junk($db->escape($_POST['date']));
 
         if (empty($name) || empty($email) || empty($contact) || empty($product) || empty($date)) {
             $session->msg("d", "Please fill in all fields.");
         } else {
-            $query = "INSERT INTO suppliers (name, email, contact, product, joined_date) VALUES ('{$name}', '{$email}', '{$contact}', '{$product}', '{$date}')";
+            $query = "INSERT INTO suppliers (name, email, contact, product_id, joined_date) VALUES ('{$name}', '{$email}', '{$contact}', '{$product}', '{$date}')";
             if ($db->query($query)) {
                 $session->msg("s", "Supplier added successfully.");
                 redirect('manage_suppliers.php', false);
@@ -105,11 +106,14 @@ $suppliers = $db->query("SELECT * FROM suppliers ORDER BY joined_date DESC");
           </div>
           <div class="col xs-12 sm-3">
             <div class="form__module">
-              <label for="product" class="form__label">Product</label>
-              <div class="form__set">
-                <input
-                type="text"
-                name="product" placeholder="Product name">
+            <label for="product" class="form__label">Product</label> <!-- Update name to "product" -->
+                <select class="form-control" id="product" name="product"> <!-- Update name to "product" -->
+                  <option value="">Select Product</option>
+                  <?php foreach ($all_products as $product): ?>
+                    <option value="<?php echo (int)$product['id'] ?>">
+                      <?php echo $product['name'] ?></option>
+                    <?php endforeach; ?>
+                  </select>
               </div>
             </div>
           </div>

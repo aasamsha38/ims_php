@@ -11,27 +11,27 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 
 // Check connection
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+	die("Connection failed: " . $conn->connect_error);
 }
 // Set the smoothing factor (alpha) for Exponential Smoothing
 $alpha = 0.5; // Can be adjusted between 0 and 1
 
 // Fetch sales data grouped by month and product
 $sql = "SELECT product_id, DATE_FORMAT(date, '%Y-%m') AS month, SUM(qty) AS total_sales 
-        FROM sales 
-        GROUP BY product_id, month 
-        ORDER BY product_id, month";
+FROM sales 
+GROUP BY product_id, month 
+ORDER BY product_id, month";
 $result = $conn->query($sql);
 
 $sales_data = [];
 
 if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $sales_data[$row['product_id']][] = [
-            'month' => $row['month'],
-            'sales' => $row['total_sales']
-        ];
-    }
+	while ($row = $result->fetch_assoc()) {
+		$sales_data[$row['product_id']][] = [
+			'month' => $row['month'],
+			'sales' => $row['total_sales']
+		];
+	}
 }
 
 // Calculate forecast using Exponential Smoothing
@@ -40,29 +40,29 @@ $forecast_results = [];
 foreach ($sales_data as $product_id => $data) {
     $previous_forecast = $data[0]['sales']; // Initialize forecast with the first actual sales
     foreach ($data as $index => $entry) {
-        $actual_sales = $entry['sales'];
-        
+    	$actual_sales = $entry['sales'];
+    	
         // Apply Exponential Smoothing formula
-        $forecast = ($alpha * $actual_sales) + ((1 - $alpha) * $previous_forecast);
-        
+    	$forecast = ($alpha * $actual_sales) + ((1 - $alpha) * $previous_forecast);
+    	
         // Calculate percentage error if actual sales exist
-        $percentage_error = ($actual_sales != 0) ? (($actual_sales - $previous_forecast) / $actual_sales) * 100 : 0;
-        
-        $forecast_results[] = [
-            'product_id' => $product_id,
-            'month' => $entry['month'],
-            'actual_sales' => $actual_sales,
-            'forecasted_sales' => round($forecast, 2),
-            'percentage_error' => round($percentage_error, 2)
-        ];
+    	$percentage_error = ($actual_sales != 0) ? (($actual_sales - $previous_forecast) / $actual_sales) * 100 : 0;
+    	
+    	$forecast_results[] = [
+    		'product_id' => $product_id,
+    		'month' => $entry['month'],
+    		'actual_sales' => $actual_sales,
+    		'forecasted_sales' => round($forecast, 2),
+    		'percentage_error' => round($percentage_error, 2)
+    	];
 
         $previous_forecast = $forecast; // Update forecast for next iteration
     }
 }
 ?>
 
-<?php include_once('layouts/header.php'); ?> 
-</table>
+<?php include_once('layouts/header.php'); ?>
+<!-- <?php echo display_msg($msg); ?> -->
 <div class="workboard__heading">
 	<h1 class="workboard__title">Sales Prediction</h1>
 </div>
@@ -98,25 +98,25 @@ foreach ($sales_data as $product_id => $data) {
 									<div class="tbl-wrap">
 										<table id="sales__table">
 											<thead>
-                                            <tr>
-            <th>Product ID</th>
-            <th>Month</th>
-            <th>Actual Sales</th>
-            <th>Forecasted Sales</th>
-            <th>Percentage Error (%)</th>
-        </tr>
+												<tr>
+													<th>Product ID</th>
+													<th>Month</th>
+													<th>Actual Sales</th>
+													<th>Forecasted Sales</th>
+													<th>Percentage Error (%)</th>
+												</tr>
 											</thead>
 											<tbody>
 
-                                            <?php foreach ($forecast_results as $result): ?>
-            <tr>
-                <td><?= $result['product_id']; ?></td>
-                <td><?= $result['month']; ?></td>
-                <td><?= $result['actual_sales']; ?></td>
-                <td><?= $result['forecasted_sales']; ?></td>
-                <td><?= $result['percentage_error']; ?>%</td>
-            </tr>
-        <?php endforeach; ?>
+												<?php foreach ($forecast_results as $result): ?>
+													<tr>
+														<td><?= $result['product_id']; ?></td>
+														<td><?= $result['month']; ?></td>
+														<td><?= $result['actual_sales']; ?></td>
+														<td><?= $result['forecasted_sales']; ?></td>
+														<td><?= $result['percentage_error']; ?>%</td>
+													</tr>
+												<?php endforeach; ?>
 											</tbody>
 										</table>
 									</div>
