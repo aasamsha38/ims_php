@@ -237,32 +237,68 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Add to cart button handling
-    document.querySelector('input[name="add_product"]').addEventListener('click', function(e) {
-        e.preventDefault();
+    // document.querySelector('input[name="add_product"]').addEventListener('click', function(e) {
+    //     e.preventDefault();
         
-        const productId = document.getElementById('product-id').value;
-        if(!productId) {
-            alert('Please scan a product first!');
-            return;
-        }
+    //     const productId = document.getElementById('product-id').value;
+    //     if(!productId) {
+    //         alert('Please scan a product first!');
+    //         return;
+    //     }
 
-        const item = {
-            id: productId,
-            name: document.getElementById('prodname').value,
-            unitPrice: parseFloat(document.getElementById('s_price').value),
-            quantity: parseInt(document.getElementById('qty').value),
-            get totalPrice() {
-                return this.unitPrice * this.quantity;
-            }
-        };
+    //     const item = {
+    //         id: productId,
+    //         name: document.getElementById('prodname').value,
+    //         unitPrice: parseFloat(document.getElementById('s_price').value),
+    //         quantity: parseInt(document.getElementById('qty').value),
+    //         get totalPrice() {
+    //             return this.unitPrice * this.quantity;
+    //         }
+    //     };
         
+    //     cart.push(item);
+    //     updateCart();
+        
+    //     // Clear form
+    //     document.getElementById('product-form').reset();
+    //     document.getElementById('brcode').focus();
+    // });
+
+    document.querySelector('input[name="add_product"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    const productId = document.getElementById('product-id').value;
+    if(!productId) {
+        alert('Please scan a product first!');
+        return;
+    }
+
+    const existingProductIndex = cart.findIndex(item => item.id === productId);
+    
+    const item = {
+        id: productId,
+        name: document.getElementById('prodname').value,
+        unitPrice: parseFloat(document.getElementById('s_price').value),
+        quantity: parseInt(document.getElementById('qty').value),
+        get totalPrice() {
+            return this.unitPrice * this.quantity;
+        }
+    };
+
+    if (existingProductIndex !== -1) {
+        // If product exists in the cart, update the quantity
+        cart[existingProductIndex].quantity += item.quantity;
+    } else {
+        // If product doesn't exist, add new product to cart
         cart.push(item);
-        updateCart();
-        
-        // Clear form
-        document.getElementById('product-form').reset();
-        document.getElementById('brcode').focus();
-    });
+    }
+    
+    updateCart();
+    
+    // Clear form
+    document.getElementById('product-form').reset();
+    document.getElementById('brcode').focus();
+});
     
     // Updated updateCart function to include unit price
     function updateCart() {
@@ -339,3 +375,52 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <?php include_once('layouts/footer.php'); ?>
+<script>
+let newBarcode = null;
+        function checkForNewBarcode() {
+            fetch('scans.json')
+                .then(response => response.json())
+                .then(data => {
+                    const now = Math.floor(Date.now() / 1000); // Current time in seconds
+                    
+
+                    // Iterate through the JSON data to find the most recent barcode
+                    for (let timestamp in data) {
+                        if (now - timestamp <= 4) { // Check if the timestamp is within 1 second
+                            newBarcode = data[timestamp];
+                            break;
+                        }
+                    }
+
+                    // If a new barcode is found, update the input field
+                    if (newBarcode) {
+                        fetch('billing.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'search_barcode=' + encodeURIComponent(newBarcode)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    document.getElementById('prodname').value = data.data.name;
+                    document.getElementById('mrp').value = data.data.buy_price;
+                    document.getElementById('s_price').value = data.data.sale_price;
+                    document.getElementById('avi_qty').value = data.data.quantity;
+                    document.getElementById('product-id').value = data.data.id;
+                    document.getElementById('qty').focus();
+                    document.getElementById('brcode').value = newBarcode;
+                } else {
+                    alert('Product not found!');
+                    document.getElementById('brcode').value = '';
+                }
+            });
+                    }
+                })
+                .catch(error => console.error('Error fetching barcode data:', error));
+        }
+
+        // Poll every 2 seconds
+        setInterval(checkForNewBarcode, 2000);
+</script>

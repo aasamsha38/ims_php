@@ -32,7 +32,7 @@
                 let barcode = data.codeResult.code;
                 alert(`Scanned: ${barcode}`);
 
-                // Send the scanned barcode to the server
+                // Send the scanned barcode to the server to store in the database or JSON
                 fetch("save_scan.php", {
                     method: "POST",
                     headers: { "Content-Type": "application/x-www-form-urlencoded" },
